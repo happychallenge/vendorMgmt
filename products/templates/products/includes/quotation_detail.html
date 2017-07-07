@@ -1,0 +1,181 @@
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <td>ITEM</td>
+                <td>CONTENT</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="gradeX">
+                <td>CHINESE NAME</td>
+                <td>{{ vendor.cn_name }}</td>
+            </tr>
+            <tr>
+                <td>ENGLISH NAME</td>
+                <td>{{ vendor.en_name|upper }}</td>
+            </tr>
+            <tr>
+                <td>CHINESE ADDRESS</td>
+                <td>{{ vendor.cn_address }}</td>
+            </tr>
+            <tr>
+                <td>ENGLISH ADDRESS</td>
+                <td>{{ vendor.en_address|upper }}</td>
+            </tr>
+            <tr>
+                <td>COMPANY TYPE</td>
+                <td>{{ vendor.companytype }}</td>
+            </tr>
+            <tr>
+                <td>STATUS</td>
+                <td>{{ vendor.status }}</td>
+            </tr>
+            <tr>
+                <td>GP RELATIONSHIP</td>
+                <td>{{ vendor.gprelation }}</td>
+            </tr>
+            <tr>
+                <td>TELEPHONE</td>
+                <td>{{ vendor.tel }}</td>
+            </tr>
+            <tr>
+                <td>HOME PAGE</td>
+                <td>
+                {% if vendor.homepage %}
+                     <a href="{{ vendor.homepage }}" target='chem'>{{ vendor.homepage}}</a>
+                {% endif %} 
+                </td>
+            </tr>
+            <tr>
+                <td>TAGS </td>
+                <td class="center"> 
+            {% for tag in vendor.tags.all %}
+                {{ tag }}, 
+            {% endfor %}
+                </td>
+            </tr>
+        {% if user.is_staff %}
+            <tr> 
+                <td colspan=2> 
+                   <button class='btn btn-primary add-product' data-url="{% url 'chemical:quotation_add' %}?vendor_id={{vendor.id}}"> 
+                        <span class="glyphicon glyphicon-plus"></span> ADD PRODUCT & QUOTATION 
+                    </button> 
+
+                    <a href="{% url 'chemical:vendor_update' vendor.id %}"><button class='btn btn-primary pull-right'><span class="glyphicon glyphicon-pencil"></span> EDIT VENDOR</button></a> 
+                </td>
+            </tr>
+        {% endif %}
+
+
+        <!-- ######################## -->
+        <!-- PRODUCT LIST OF VENDOR.  -->
+        <!-- ######################## -->
+            <tr><td colspan='2'>
+                <h3>PRODUCT LIST </h3>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name </th>
+                            <th>CAS No.</th>
+                            <th>Category</th>
+                            <th>HSCODE(china)<br>korea</th>
+                            <th>TAX <br> REFUND(%)</th>
+                            <th>CREATED AT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for vendorProduct in  vendor.vendorproduct_set.all %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'chemical:product_detail' vendorProduct.product.id %}">{{ vendorProduct.product.cn_name }} <br> 
+                                {{vendorProduct.product.en_name|upper}}</a> 
+                            </td>
+                            <td>{{ vendorProduct.product.cas_no}}</td>
+                            <td>{{ vendorProduct.product.category }}</td>
+                            <td>
+                                {{ vendorProduct.product.cn_hscode }} <br> 
+                                {{vendorProduct.product.ko_hscode}} 
+                            </td>
+                            <td>{{ vendorProduct.product.rate_taxrefund }}</td>
+                            <td>{{ vendorProduct.created_at }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan='6'>
+                                <!-- ######################## -->
+                                <!-- QUOTATION LIST -->
+                                <!-- ######################## -->
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ID </th>
+                                            <th>QUOTATION PRICE</th>
+                                            <th>CURRENCY </th>
+                                            <th>QUOTATION DATE</th>
+                                            <th>EFFIVE DATE</th>
+                                            <th>STATUS</th>
+                                            <th>COMMENT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                {% for quotation in vendorProduct.quotation_set.all %}
+                                    <tr class='sub{% if quotation.status == 'I' %} invlid{% endif %}'>
+                                        <th> {{forloop.counter }} </th>
+                                        <th> {{quotation.price}}</th>
+                                        <th> {{quotation.currency}} </th>
+                                        <th> {{quotation.quote_date|date:'Y/m/d'}} </th>
+                                        <th> {{quotation.effective_date|date:'Y/m/d'}} </th>
+                                        <th> {{quotation.status}} </th>
+                                        <th> {{quotation.comment}} </th>
+                                    </tr>
+                                {% endfor %}
+                                    </tbody>
+                                </table></td>
+                                <!-- QUOTATION LIST -->
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <!-- PRODUCT LIST OF vendor -->
+            </tr>
+        <!-- ######################## -->
+        <!-- CONTACT LIST OF VENDOR.  -->
+        <!-- ######################## -->
+            <tr><td colspan='2'>
+                <h3>CONTACT LIST </h3>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name </th>
+                            <th>ROLE</th>
+                            <th>MOBILE</th>
+                            <th>EMAIL</th>
+                            <th>WECHAT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for contact in  vendor.contact_set.all %}
+                        <tr>
+                            <td>{{ contact.cn_name }} - {{ contact.en_name }}</td>
+                            <td>{{ contact.role }}</td>
+                            <td>{{ contact.mobile }}</td>
+                            <td>{{ contact.email }}</td>
+                            <td>{{ contact.wechat }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% if user.is_staff %}
+                <a href="{% url 'chemical:contact_add' %}">
+                    <button class='btn btn-primary'>
+                        <span class="glyphicon glyphicon-plus"></span> ADD CONTACT</button>
+                </a> 
+            {% endif %}
+                </td>
+                <!-- PRODUCT LIST OF vendor -->
+            </tr>
+
+        </tbody>
+    </table> 
+    <!-- vendor -->

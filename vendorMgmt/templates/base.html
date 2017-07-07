@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> {% block title %} {% endblock title %} </title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+{% block css %}
+    
+{% endblock css %}
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    {% include 'include/left-menu.html' %}
+
+    <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
+            {% include 'include/upper-menu.html' %}
+        </div>
+
+        <!-- #################### -->
+        <!-- Upper Menu and Index -->
+        <!-- #################### -->
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+            {% block header-index %}
+                
+            {% endblock header-index %}
+            </div>
+        </div>
+
+    <!-- #################### -->
+    <!-- Main Content -->
+    <!-- #################### -->
+        <div class="wrapper wrapper-content">
+            <div class="row animated fadeInDown">
+
+            {% block mainContent %}
+                
+            {% endblock mainContent %}
+
+            </div> <!-- class="row animated fadeInDown" -->
+        </div> <!-- class="wrapper wrapper-content" -->
+
+    <!-- #################### -->
+    <!-- Main Content -->
+    <!-- #################### -->        
+        {% include 'include/footer.html' %}
+    </div>
+</div>
+
+<!-- Mainly scripts -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+
+{% block javascript %}
+    
+{% endblock javascript %}
+
+
+</body>
+
+</html>
