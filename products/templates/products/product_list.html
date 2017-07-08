@@ -66,7 +66,7 @@
                     {% for product in product_list %}
                         <tr class="gradeX">
                             <td>
-                                <a href="{% url 'chemical:product_detail' product.id %}">{{ product.cn_name }} <br> {{product_en_name|upper}}</a> 
+                                <a href="{% url 'chemical:product_detail' product.id %}">{{product.en_name|upper}} <br> {{ product.cn_name }} </a> 
                             </td>
                             <td>{{ product.cas_no}}</td>
                             <td>{{ product.category }}</td>

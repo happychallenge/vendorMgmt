@@ -111,8 +111,8 @@ class Product(models.Model):
     cas_no = models.CharField(max_length=20, verbose_name='CAS NO', blank=True, null=True)
     category = models.ForeignKey(Category)
 
-    cn_hscode = models.CharField(max_length=15, verbose_name='중국 HS CODE')
-    ko_hscode = models.CharField(max_length=15, verbose_name='한국 HS CODE')
+    cn_hscode = models.CharField(max_length=15, verbose_name='중국 HS CODE', blank=True, null=True)
+    ko_hscode = models.CharField(max_length=15, verbose_name='한국 HS CODE', blank=True, null=True)
     etc_hscode = models.CharField(max_length=15, verbose_name='ETC HS CODE', blank=True, null=True)
 
     rate_taxrefund = models.FloatField(max_length=100, verbose_name='RATE of TAX REFUND(%)', blank=True, null=True)
@@ -202,4 +202,43 @@ class Quotation(models.Model):
     def __str__(self):
         return "{}".format(self.vendorproduct)
 
+
+class Sourcing(models.Model):
+    """docstring for Quotation"""
+    """ Quotation """
+    VALID = 'V'
+    INVALID = 'I'
+    STATUS = (
+        (VALID, 'VALID'),
+        (INVALID, 'IN-VALID'),
+    )
+
+    CACHE = 'CACHE'
+    THIRTY = '30%PREPAY, 70%LATER'
+    TT30 = 'T/T 30 DAYS'
+    TT45 = 'T/T 45 DAYS'
+    TT60 = 'T/T 60 DAYS'
+    TT90 = 'T/T 90 DAYS'
+    PAYTERM = (
+        (CACHE, 'CACHE'),
+        (THIRTY, '30%PREPAY, 70%LATER'),
+        (TT30, 'T/T 30 DAYS'),
+        (TT45, 'T/T 45 DAYS'),
+        (TT60, 'T/T 60 DAYS'),
+        (TT90, 'T/T 90 DAYS'),
+    )
+
+    vendorproduct = models.ForeignKey(VendorProduct)
+    price = models.FloatField()
+    payterm = models.CharField(max_length=20, choices=PAYTERM, default=TT60)
+    quote_date = models.DateTimeField(auto_now_add=True)
+    effective_date = models.DateField(blank=True, null=True)
+    status = models.CharField(max_length=1, choices=STATUS, default=VALID)
+    comments = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = [ '-status', '-quote_date', ]
+
+    def __str__(self):
+        return "{}".format(self.vendorproduct)
     
