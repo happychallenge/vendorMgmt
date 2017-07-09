@@ -163,7 +163,7 @@
                                                 <tr class='sub{% if quotation.status == 'I' %} invlid{% endif %}'> 
                                                     <td> {{forloop.counter }} </td>
                                                     <td> {{vendorProduct.ptype}}</td>
-                                                    <td> {{quotation.price}}</td>
+                                                    <td style="text-align:right"> {{quotation.price}}</td>
                                                     <td> {{quotation.currency}} </td>
                                                     <td> {{quotation.quote_date|date:'Y/m/d'}} </td>
                                                     <td> {{quotation.effective_date|date:'Y/m/d'}} </td>

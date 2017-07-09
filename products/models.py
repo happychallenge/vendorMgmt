@@ -229,7 +229,8 @@ class Sourcing(models.Model):
     )
 
     vendorproduct = models.ForeignKey(VendorProduct)
-    price = models.FloatField()
+    buying_price = models.FloatField()
+    sales_price = models.FloatField(blank=True, null=True)
     payterm = models.CharField(max_length=20, choices=PAYTERM, default=TT60)
     quote_date = models.DateTimeField(auto_now_add=True)
     effective_date = models.DateField(blank=True, null=True)

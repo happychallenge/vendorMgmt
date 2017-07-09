@@ -24,4 +24,10 @@ urlpatterns = [
     url(r'^quotation/simpleadd/$', views_quote.quotation_simpleadd, name='quotation_simpleadd'),
     url(r'^quotation/update/$', views_quote.quotation_update, name='quotation_update'),
     url(r'^quotation/ajax_add/$', views_quote.ajax_quotation_add, name='ajax_quotation_add'),
+
+# SOURCING
+    url(r'^sourcing/$', views.sourcingvendor_list, name='sourcingvendor_list'),
+    url(r'^sourcing/(?P<id>\d+)/$', views.sourcingvendor_detail, name='sourcingvendor_detail'),
+    url(r'^sourcing/add/$', views.sourcing_add, name='sourcing_add'),
+    # url(r'^sourcing/update/(?P<id>\d+)/$', views.vendor_update, name='vendor_update'),
 ]

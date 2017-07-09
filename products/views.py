@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 
-from .models import Vendor, Product, Contact, VendorProduct
-from .forms import VendorForm, ProductForm, ContactForm
+from .models import Vendor, Product, Contact, VendorProduct, Sourcing
+from .forms import VendorForm, ProductForm, ContactForm, SourcingForm
 # Create your views here.
 
 ###############################################
@@ -35,7 +35,6 @@ def vendor_add(request, template_name='products/vendor_add.html'):
             return redirect('chemical:vendor_list')
     else:
         form = VendorForm()
-
     return render(request, template_name, {'form':form})
 
 
@@ -50,8 +49,52 @@ def vendor_update(request, id, template_name='products/vendor_add.html'):
             return redirect('chemical:vendor_list')
     else:
         form = VendorForm(instance=vendor)
-
     return render(request, template_name, {'form':form})
+
+
+###############################################
+########### SOURCING 
+###############################################
+@login_required
+def sourcingvendor_list(request):
+    vendor_list = Vendor.objects.prefetch_related('tags').all()
+    return render(request, 'products/sourcingvendor_list.html', {'vendor_list': vendor_list})
+
+@login_required
+def sourcingvendor_detail(request, id):
+    # vendor = get_object_or_404(vendor, id=id)
+    vendor = Vendor.objects.prefetch_related('vendorproduct_set', 'contact_set').get(id=id)
+    vendorproducts = VendorProduct.objects.prefetch_related('sourcing_set').filter(vendor=vendor)
+    return render(request, 'products/sourcingvendor_detail.html', 
+            {'vendor': vendor, 'vendorproducts': vendorproducts})
+
+# 신규 Sourcing을 생성할 때.
+@staff_member_required
+def sourcing_add(request, template_name='products/sourcing_add.html'):
+
+    if request.method == 'POST':
+        print("11111")
+        vendorproduct_id = request.POST.get('vendorproduct')
+        vendorproduct = VendorProduct.objects.select_related("vendor").get(id=vendorproduct_id)
+        form = SourcingForm(request.POST)
+
+        if form.is_valid():
+            print("Valid 11111111111111")
+            sourcing = form.save(commit=False)
+            sourcing.vendorproduct = vendorproduct
+            sourcing.save()
+            return redirect('chemical:sourcingvendor_detail', vendorproduct.vendor.id)
+    else:
+        vendorproduct_id = request.GET.get('vendorproduct')
+        vendorproduct = VendorProduct.objects.select_related("vendor", "product").get(id=vendorproduct_id)
+        form = SourcingForm(initial={
+                    'vendorproduct': vendorproduct.id, 
+                    'vendor_name': vendorproduct.vendor.en_name,
+                    'product_name': vendorproduct.product.en_name,
+                    'ptype': vendorproduct.ptype,
+                })
+    return render(request, template_name, {'form':form})
+
 
 ###############################################
 ########### PRODUCT 

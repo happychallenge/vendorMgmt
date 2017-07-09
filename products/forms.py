@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import Textarea
 
-from .models import Vendor, Product, Contact, Quotation
+from .models import Vendor, Product, Contact, Quotation, Sourcing
 
 class VendorForm(forms.ModelForm):
     class Meta:
@@ -66,6 +66,21 @@ class QuotationUpdateForm(forms.ModelForm):
         fields = ['quotation', 'vendor', 'vendor_name', 'product', 'product_name', 
                     'oldprice', 'price', 'currency', 'oldpayterm', 'payterm', 
                     'effective_date', 'status', 'comments']
+        widgets = {
+            'comments': Textarea(attrs={'rows': 3}),
+        }
+
+class SourcingForm(forms.ModelForm):
+
+    vendorproduct = forms.IntegerField(widget=forms.HiddenInput())
+    vendor_name = forms.CharField()
+    product_name = forms.CharField()
+    ptype = forms.CharField()
+
+    class Meta:
+        model = Sourcing
+        fields = ['vendorproduct', 'vendor_name', 'product_name', 'ptype',  'buying_price', 
+                 'payterm', 'effective_date', 'status', 'comments']
         widgets = {
             'comments': Textarea(attrs={'rows': 3}),
         }

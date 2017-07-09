@@ -39,7 +39,7 @@ class ProductAdmin(admin.ModelAdmin):
 class VendorProductAdmin(admin.ModelAdmin):
     class Meta:
         model = VendorProduct
-    list_display = ['vendor', 'product', 'ptype', 'created_at']
+    list_display = ['id', 'vendor', 'product', 'ptype', 'created_at']
     list_select_related = ('vendor', 'product')
     search_fields = [ 'vendor__en_name', 'product__en_name' ]
 

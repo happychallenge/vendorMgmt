@@ -104,7 +104,8 @@
                         {% endfor %}
                             </td>
                         </tr>
-                    {% if user.is_staff %}
+                    {# 관리자를 위한 등록 버턴 #}
+                    {% if user.is_staff %} 
                         <tr> 
                             <td colspan=2> 
                                 <!--
@@ -112,7 +113,6 @@
                                     <span class="glyphicon glyphicon-plus"></span> ADD AJAX PRODUCT & QUOTATION  
                                 </button>
                                 -->
-
                                 <a href="{% url 'chemical:quotation_add' %}?vendor_id={{vendor.id}}">
                                     <button class='btn btn-primary' data-url=""> 
                                         <span class="glyphicon glyphicon-plus"></span> ADD PRODUCT & QUOTATION 
@@ -134,8 +134,8 @@
                                     <tr>
                                         <th>NAME </th>
                                         <th>TYPE </th>
-                                        <th>QUOTATION <br> PRICE</th>
-                                        <th>CURRENCY </th>
+                                        <th>BUYING <br> PRICE</th>
+                                        <th>SALES <br> PRICE</th>
                                         <th>PAY TERM</th>
                                         <th>QUOTATION DATE</th>
                                         <th>STATUS</th>
@@ -146,22 +146,21 @@
                                 </thead>
                                 <tbody>
                             {% for vdproduct in vendorproducts %}
-                                {% for quotation in vdproduct.quotation_set.all %}
-                                     {% if quotation.status == 'V' %}
+                                {% for sourcing in vdproduct.sourcing_set.all %}
+                                    {% if sourcing.status == 'V' %}
                                     <tr>
-                                        
                                         <td> {{vdproduct.product}} </td>
                                         <td> {{vdproduct.ptype }} </td>
-                                        <td style="text-align:right"> {{quotation.price}}</td>
-                                        <td> {{quotation.currency}} </td>
-                                        <td> {{quotation.payterm}}</td>
-                                        <td> {{quotation.quote_date|date:'Y/m/d'}} </td>
-                                        <td> {{quotation.status}} </td>
-                                        <td> {{quotation.comment}} </td>
+                                        <td style="text-align:right"> {{sourcing.buying_price}}</td>
+                                        <td style="text-align:right"> {{sourcing.sales_price}}</td>
+                                        <td> {{sourcing.payterm}}</td>
+                                        <td> {{sourcing.quote_date|date:'Y/m/d'}} </td>
+                                        <td> {{sourcing.status}} </td>
+                                        <td> {{sourcing.comment}} </td>
                                         <td> 
-                                        <form action="{% url 'chemical:quotation_simpleadd' %}" method="POST"> 
+                                        <form action="" method="POST"> {# {% url 'chemical:sourcing_simpleadd' %} #}
                                             {% csrf_token %}
-                                            <input type="hidden" name="quotation" value="{{quotation.id}}" />   
+                                            <input type="hidden" name="sourcing" value="{{sourcing.id}}" />   
                                             <input type="hidden" name="vendor" value="{{vendor.id}}" />   
                                             <input type="number" name="newprice" step="any" class="form-control" placeholder="New Price" title="" required id="id_newprice" /> 
                                          
@@ -169,7 +168,7 @@
                                         </form>
                                         </td>
                                         <td>
-                                            <a href="{% url 'chemical:quotation_update' %}?quotation={{quotation.id}}">
+                                            <a href=""> {# {% url 'chemical:sourcing_update' %}?sourcing={{sourcing.id}} #}
                                                 <button type="button" class="btn btn-primary">UPDATE</button>
                                             </a>
                                         </td>
@@ -224,8 +223,8 @@
                                                 <thead>
                                                     <tr>
                                                         <th>ID </th>
-                                                        <th>QUOTATION PRICE</th>
-                                                        <th>CURRENCY </th>
+                                                        <th>BUYING <br> PRICE</th>
+                                                        <th>SALES <br> PRICE </th>
                                                         <th>PAY TERM</th>
                                                         <th>QUOTATION DATE</th>
                                                         <th>EFFIVE DATE</th>
@@ -234,18 +233,29 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                {% for quotation in vendorProduct.quotation_set.all %}
-                                                    <tr class='sub{% if quotation.status == 'I' %} invlid{% endif %}'>
+                                                {% for sourcing in vendorProduct.sourcing_set.all %}
+                                                    <tr class='sub{% if sourcing.status == 'I' %} invlid{% endif %}'>
                                                         <td> {{forloop.counter }} </td>
-                                                        <td style="text-align:right"> {{quotation.price}}</td>
-                                                        <td> {{quotation.currency}} </td>
-                                                        <td> {{quotation.payterm}}</td>
-                                                        <td> {{quotation.quote_date|date:'Y/m/d'}} </td>
-                                                        <td> {{quotation.effective_date|date:'Y/m/d'}} </td>
-                                                        <td> {{quotation.status}} </td>
-                                                        <td> {{quotation.comment}} </td>
+                                                        <td style="text-align:right"> {{sourcing.buying_price}}</td>
+                                                        <td style="text-align:right"> {{sourcing.sales_price}}</td>
+                                                        <td> {{sourcing.payterm}}</td>
+                                                        <td> {{sourcing.quote_date|date:'Y/m/d'}} </td>
+                                                        <td> {{sourcing.effective_date|date:'Y/m/d'}} </td>
+                                                        <td> {{sourcing.status}} </td>
+                                                        <td> {{sourcing.comment}} </td>
+                                                    </tr>
+                                                {% empty %} {# 견적이 없는 경우 추가를 함 #}
+                                                    <tr>
+                                                        <td colspan='8'> 
+                                                            <a href="{% url 'chemical:sourcing_add' %}?vendorproduct={{vendorProduct.id}}">
+                                                                <button class='btn btn-primary'> 
+                                                                    <span class="glyphicon glyphicon-plus"></span> ADD RMB QUOTATION 
+                                                                </button> 
+                                                            </a>
+                                                        </td>
                                                     </tr>
                                                 {% endfor %}
+
                                                 </tbody>
                                             </table></td>
                                             <!-- QUOTATION LIST -->

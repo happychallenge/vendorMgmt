@@ -112,11 +112,9 @@ def quotation_simpleadd(request):
 def quotation_update(request, template_name='products/quotation_update.html'):
     if request.method == 'POST':
         quotation_id = request.POST.get('quotation')
-        print("Quotation ", quotation_id)
         form = QuotationUpdateForm(request.POST)
         oldquotation = Quotation.objects.select_related('vendorproduct__vendor', 
                 'vendorproduct__product').get(id=quotation_id)
-        print("Quotation 2 ", oldquotation)
         
         if form.is_valid():
 
