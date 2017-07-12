@@ -104,6 +104,10 @@
                         {% endfor %}
                             </td>
                         </tr>
+                        <tr>
+                            <td>COMMENTS</td>
+                            <td>{{ vendor.comments }}</td>
+                        </tr>
                     {% if user.is_staff %}
                         <tr> 
                             <td colspan=2> 
@@ -113,7 +117,7 @@
                                 </button>
                                 -->
 
-                                <a href="{% url 'chemical:quotation_add' %}?vendor_id={{vendor.id}}">
+                                <a href="{% url 'chemical:quotation_productadd' %}?vendor_id={{vendor.id}}">
                                     <button class='btn btn-primary' data-url=""> 
                                         <span class="glyphicon glyphicon-plus"></span> ADD PRODUCT & QUOTATION 
                                     </button> 
@@ -139,25 +143,23 @@
                                         <th>PAY TERM</th>
                                         <th>QUOTATION DATE</th>
                                         <th>STATUS</th>
-                                        <th>COMMENT</th>
                                         <th> NEW <br> QUOTATION</th>
                                         <th> ACTION </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                            {% for vdproduct in vendorproducts %}
-                                {% for quotation in vdproduct.quotation_set.all %}
+                            {% for vendorproduct in vendorproducts %}
+                                {% for quotation in vendorproduct.quotation_set.all %}
                                      {% if quotation.status == 'V' %}
                                     <tr>
                                         
-                                        <td> {{vdproduct.product}} </td>
-                                        <td> {{vdproduct.ptype }} </td>
-                                        <td style="text-align:right"> {{quotation.price}}</td>
+                                        <td> {{vendorproduct.product}} </td>
+                                        <td> {{vendorproduct.ptype }} </td>
+                                        <td style="text-align:right"> {{quotation.price|floatformat:2}}</td>
                                         <td> {{quotation.currency}} </td>
                                         <td> {{quotation.payterm}}</td>
                                         <td> {{quotation.quote_date|date:'Y/m/d'}} </td>
                                         <td> {{quotation.status}} </td>
-                                        <td> {{quotation.comment}} </td>
                                         <td> 
                                         <form action="{% url 'chemical:quotation_simpleadd' %}" method="POST"> 
                                             {% csrf_token %}
@@ -224,6 +226,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>ID </th>
+                                                        <th>TYPE </th>
                                                         <th>QUOTATION PRICE</th>
                                                         <th>CURRENCY </th>
                                                         <th>PAY TERM</th>
@@ -237,7 +240,8 @@
                                                 {% for quotation in vendorProduct.quotation_set.all %}
                                                     <tr class='sub{% if quotation.status == 'I' %} invlid{% endif %}'>
                                                         <td> {{forloop.counter }} </td>
-                                                        <td style="text-align:right"> {{quotation.price}}</td>
+                                                        <td> {{vendorProduct.ptype}}</td>
+                                                        <td style="text-align:right"> {{quotation.price|floatformat:2}}</td>
                                                         <td> {{quotation.currency}} </td>
                                                         <td> {{quotation.payterm}}</td>
                                                         <td> {{quotation.quote_date|date:'Y/m/d'}} </td>
@@ -252,6 +256,7 @@
                                         </td>
                                     </tr>
                                 {% endfor %}
+
                                 </tbody>
                             </table>
                             <!-- PRODUCT LIST OF vendor -->

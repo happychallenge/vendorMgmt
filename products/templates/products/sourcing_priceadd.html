@@ -18,7 +18,7 @@
             <a href="{% url 'home' %}">Home</a>  
         </li>
         <li>
-            <a href="{% url 'chemical:contact_list' %}">ADD PRODUCT AND QUOTATION</a>
+            <a href="{% url 'chemical:sourcingvendor_list' %}">ADD PRODUCT AND QUOTATION</a>
         </li>
         <li class="active">
             <strong>ADD</strong>
@@ -31,7 +31,7 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>ADD PRODUCT AND QUOTATION </h5>
+                <h5>ADD PRODUCT AND SOURCING </h5>
                 <div class="ibox-tools">
 
                     <a class="collapse-link">
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <form method="post" action="{% url 'chemical:sourcing_add' %}">
+                <form method="post" action="{% url 'chemical:sourcing_priceadd' %}">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>

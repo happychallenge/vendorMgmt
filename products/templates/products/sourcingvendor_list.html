@@ -3,7 +3,7 @@
 
 
 {% block title %}
-    Vendor List 
+    SOURCING List 
 {% endblock title %}
 
 
@@ -14,7 +14,7 @@
 
 
 {% block header-index %}
-    <h2> Vendor (供应商) </h2>
+    <h2> SOURCING (供应商) </h2>
     {% if user.is_staff %}
         <a href="{% url 'chemical:vendor_add' %}">
             <button class='btn btn-primary pull-right'>
@@ -27,7 +27,7 @@
             <a href="{% url 'home' %}">Home</a>  
         </li>
         <li>
-            Vendor (供应商)
+            SOURCING (供应商)
         </li>
         <li class="active">
             <strong>List</strong>
@@ -40,7 +40,7 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Vendor (供应商) </h5>
+                <h5>SOURCING (供应商) </h5>
                 <div class="ibox-tools">
 
                     <a class="collapse-link">

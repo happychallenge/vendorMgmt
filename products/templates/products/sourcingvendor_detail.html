@@ -3,7 +3,7 @@
 
 
 {% block title %}
-    Vendor Detail - {{ vendor.en_name | upper }} 
+    SOURCING Detail - {{ vendor.en_name | upper }} 
 {% endblock title %}
 
 
@@ -14,13 +14,13 @@
 
 
 {% block header-index %}
-    <h2> Vendor (供应商) </h2>
+    <h2> SOURCING (供应商) </h2>
     <ol class="breadcrumb">
         <li>
             <a href="index.html">Home</a>
         </li>
         <li>
-           <a href="{% url 'chemical:vendor_list' %}"> Vendor (供应商) </a>
+           <a href="{% url 'chemical:vendor_list' %}"> SOURCING (供应商) </a>
         </li>
         <li class="active">
             <strong>Detail</strong>
@@ -33,7 +33,7 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5> VENDOR (供应商) - {{ vendor.en_name|upper }} </h5>
+                <h5> SOURCING (供应商) - {{ vendor.en_name|upper }} </h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
@@ -105,7 +105,7 @@
                             </td>
                         </tr>
                     {# 관리자를 위한 등록 버턴 #}
-                    {% if user.is_staff %} 
+                     {% if user.is_staff %} 
                         <tr> 
                             <td colspan=2> 
                                 <!--
@@ -113,9 +113,9 @@
                                     <span class="glyphicon glyphicon-plus"></span> ADD AJAX PRODUCT & QUOTATION  
                                 </button>
                                 -->
-                                <a href="{% url 'chemical:quotation_add' %}?vendor_id={{vendor.id}}">
+                                <a href="{% url 'chemical:sourcing_productadd' %}?vendor_id={{vendor.id}}">
                                     <button class='btn btn-primary' data-url=""> 
-                                        <span class="glyphicon glyphicon-plus"></span> ADD PRODUCT & QUOTATION 
+                                        <span class="glyphicon glyphicon-plus"></span> ADD PRODUCT & SOURCING 
                                     </button> 
                                 </a>
 
@@ -139,7 +139,6 @@
                                         <th>PAY TERM</th>
                                         <th>QUOTATION DATE</th>
                                         <th>STATUS</th>
-                                        <th>COMMENT</th>
                                         <th> NEW <br> QUOTATION</th>
                                         <th> ACTION </th>
                                     </tr>
@@ -156,9 +155,8 @@
                                         <td> {{sourcing.payterm}}</td>
                                         <td> {{sourcing.quote_date|date:'Y/m/d'}} </td>
                                         <td> {{sourcing.status}} </td>
-                                        <td> {{sourcing.comment}} </td>
                                         <td> 
-                                        <form action="" method="POST"> {# {% url 'chemical:sourcing_simpleadd' %} #}
+                                        <form action="{% url 'chemical:sourcing_simpleadd' %}" method="POST"> {#  #}
                                             {% csrf_token %}
                                             <input type="hidden" name="sourcing" value="{{sourcing.id}}" />   
                                             <input type="hidden" name="vendor" value="{{vendor.id}}" />   
@@ -223,6 +221,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>ID </th>
+                                                        <th>TYPE </th>
                                                         <th>BUYING <br> PRICE</th>
                                                         <th>SALES <br> PRICE </th>
                                                         <th>PAY TERM</th>
@@ -236,6 +235,7 @@
                                                 {% for sourcing in vendorProduct.sourcing_set.all %}
                                                     <tr class='sub{% if sourcing.status == 'I' %} invlid{% endif %}'>
                                                         <td> {{forloop.counter }} </td>
+                                                        <td> {{vendorProduct.ptype}}</td>
                                                         <td style="text-align:right"> {{sourcing.buying_price}}</td>
                                                         <td style="text-align:right"> {{sourcing.sales_price}}</td>
                                                         <td> {{sourcing.payterm}}</td>
@@ -246,8 +246,8 @@
                                                     </tr>
                                                 {% empty %} {# 견적이 없는 경우 추가를 함 #}
                                                     <tr>
-                                                        <td colspan='8'> 
-                                                            <a href="{% url 'chemical:sourcing_add' %}?vendorproduct={{vendorProduct.id}}">
+                                                        <td colspan='9'> 
+                                                            <a href="{% url 'chemical:sourcing_priceadd' %}?vendorproduct={{vendorProduct.id}}">
                                                                 <button class='btn btn-primary'> 
                                                                     <span class="glyphicon glyphicon-plus"></span> ADD RMB QUOTATION 
                                                                 </button> 

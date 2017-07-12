@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 # User
     'products',
     'authentication',
+    # 'order',
 
 ]
 

@@ -18,7 +18,7 @@ class ContactForm(forms.ModelForm):
         model = Contact
         fields = '__all__'
 
-class QuotationForm(forms.ModelForm):
+class QuotationProductForm(forms.ModelForm):
 
     POWDER = 'POWDER'
     GRANULAR = 'GRANULAR'
@@ -70,17 +70,53 @@ class QuotationUpdateForm(forms.ModelForm):
             'comments': Textarea(attrs={'rows': 3}),
         }
 
-class SourcingForm(forms.ModelForm):
 
-    vendorproduct = forms.IntegerField(widget=forms.HiddenInput())
+# For views.sourcing_productadd
+class SourcingProductForm(forms.ModelForm):
+
+    POWDER = 'POWDER'
+    GRANULAR = 'GRANULAR'
+    LIQUID = 'LIQUID'
+    PRODUCTTYPE = (
+        (POWDER, 'POWDER'),
+        (GRANULAR, 'GRANULAR'),
+        (LIQUID, 'LIQUID'),
+    )
+
+    vendor = forms.IntegerField(widget=forms.HiddenInput())
     vendor_name = forms.CharField()
+
+# 제품을 선택하도록 함 
+    product = forms.ModelChoiceField(queryset=Product.objects.all())
+    ptype = forms.ChoiceField(widget=forms.RadioSelect, choices=PRODUCTTYPE)
+
+    class Meta:
+        model = Sourcing
+        fields = ['vendor', 'vendor_name', 'product', 'ptype',  'buying_price', 
+                'payterm', 'effective_date', 'status', 'comments']
+        widgets = {
+            'comments': Textarea(attrs={'rows': 3}),
+        }
+
+class SourcingPriceForm(forms.ModelForm):
+
+    vendor = forms.IntegerField(widget=forms.HiddenInput())
+    vendor_name = forms.CharField()
+    product = forms.IntegerField(widget=forms.HiddenInput())
     product_name = forms.CharField()
     ptype = forms.CharField()
 
     class Meta:
         model = Sourcing
-        fields = ['vendorproduct', 'vendor_name', 'product_name', 'ptype',  'buying_price', 
-                 'payterm', 'effective_date', 'status', 'comments']
+        fields = [ 'vendor', 'vendor_name', 'product', 'product_name', 'ptype',  
+                'buying_price', 'payterm', 'effective_date', 'status', 'comments']
         widgets = {
             'comments': Textarea(attrs={'rows': 3}),
         }
+
+
+class SourcingSimpleForm(forms.Form):
+    vendor = forms.IntegerField(widget=forms.HiddenInput())
+    sourcing = forms.IntegerField(widget=forms.HiddenInput())
+    newprice = forms.FloatField()
+

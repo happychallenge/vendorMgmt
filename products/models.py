@@ -130,20 +130,50 @@ class Product(models.Model):
     def __str__(self):
         return self.en_name
 
+
+POWDER = 'POWDER'
+GRANULAR = 'GRANULAR'
+LIQUID = 'LIQUID'
+TYPE = (
+    (POWDER, 'POWDER'),
+    (GRANULAR, 'GRANULAR'),
+    (LIQUID, 'LIQUID'),
+)
+
+class Packing(models.Model):
+    """docstring for Packing"""
+    """ 설명 """
+
+    CARTON = 'CARTON'
+    BAG = 'BAG'
+    DRUM = 'DRUM'
+    CYLINDER = 'CYLINDER'
+    EXTRA = 'EXTRA'
+    PACKINGTYPE = (
+        (CARTON, 'CARTON'),
+        (BAG, 'BAG'),
+        (DRUM, 'DRUM'),
+        (CYLINDER, 'CYLINDER'),
+        (EXTRA, 'EXTRA'),
+    )
+
+    product = models.ForeignKey(Product)
+    ptype = models.CharField(max_length=10, choices=TYPE, default=POWDER)
+    packing_type = models.CharField(max_length=10, choices=PACKINGTYPE, default=BAG)
+    unit_weight = models.IntegerField()
+    pallet_weight = models.IntegerField(default=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{} {}".format(self.product, self.ptype)
+
+
     
 class VendorProduct(models.Model):
     """docstring for CompcanyProduct"""
-    POWDER = 'POWDER'
-    GRANULAR = 'GRANULAR'
-    LIQUID = 'LIQUID'
-    TYPE = (
-        (POWDER, 'POWDER'),
-        (GRANULAR, 'GRANULAR'),
-        (LIQUID, 'LIQUID'),
-    )
-
+    
     vendor = models.ForeignKey(Vendor)
-    product = models.ForeignKey(Product)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     ptype = models.CharField(max_length=10, choices=TYPE, default=POWDER)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -172,14 +202,14 @@ class Quotation(models.Model):
         (DOLLAR, 'DOLLAR'),
     )
 
-    CACHE = 'CACHE'
+    CASH = 'CASH'
     THIRTY = '30%PREPAY, 70%LATER'
     TT30 = 'T/T 30 DAYS'
     TT45 = 'T/T 45 DAYS'
     TT60 = 'T/T 60 DAYS'
     TT90 = 'T/T 90 DAYS'
     PAYTERM = (
-        (CACHE, 'CACHE'),
+        (CASH, 'CASH'),
         (THIRTY, '30%PREPAY, 70%LATER'),
         (TT30, 'T/T 30 DAYS'),
         (TT45, 'T/T 45 DAYS'),
@@ -213,14 +243,14 @@ class Sourcing(models.Model):
         (INVALID, 'IN-VALID'),
     )
 
-    CACHE = 'CACHE'
+    CASH = 'CASH'
     THIRTY = '30%PREPAY, 70%LATER'
     TT30 = 'T/T 30 DAYS'
     TT45 = 'T/T 45 DAYS'
     TT60 = 'T/T 60 DAYS'
     TT90 = 'T/T 90 DAYS'
     PAYTERM = (
-        (CACHE, 'CACHE'),
+        (CASH, 'CASH'),
         (THIRTY, '30%PREPAY, 70%LATER'),
         (TT30, 'T/T 30 DAYS'),
         (TT45, 'T/T 45 DAYS'),
@@ -231,7 +261,7 @@ class Sourcing(models.Model):
     vendorproduct = models.ForeignKey(VendorProduct)
     buying_price = models.FloatField()
     sales_price = models.FloatField(blank=True, null=True)
-    payterm = models.CharField(max_length=20, choices=PAYTERM, default=TT60)
+    payterm = models.CharField(max_length=20, choices=PAYTERM, default=CASH)
     quote_date = models.DateTimeField(auto_now_add=True)
     effective_date = models.DateField(blank=True, null=True)
     status = models.CharField(max_length=1, choices=STATUS, default=VALID)

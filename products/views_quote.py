@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 
 from .models import Vendor, Product, VendorProduct, Quotation
-from .forms import QuotationForm, QuotationSimpleForm, QuotationUpdateForm
+from .forms import QuotationProductForm, QuotationSimpleForm, QuotationUpdateForm
 
 ###############################################
 ###########    QUOTATION 
@@ -54,9 +54,9 @@ def ajax_quotation_add(request, template_name='products/includes/ajax_quotation_
 
 # 신규로 상품과 Quotaion 을 모두 생성할 때.
 @staff_member_required
-def quotation_add(request, template_name='products/quotation_add.html'):
+def quotation_productadd(request, template_name='products/quotation_productadd.html'):
     if request.method == 'POST':
-        form = QuotationForm(request.POST)
+        form = QuotationProductForm(request.POST)
         if form.is_valid():
             vendor_id = form.cleaned_data.get('vendor')
             product_id = form.cleaned_data.get('product')
@@ -65,16 +65,16 @@ def quotation_add(request, template_name='products/quotation_add.html'):
             if product_id and vendor_id:
                 vendor = get_object_or_404(Vendor, id=vendor_id)
                 product = get_object_or_404(Product, en_name=product_id)
-                vendorproduct = VendorProduct.objects.create(vendor=vendor, product=product, ptype=ptype)
+                vendorproduct, created = VendorProduct.objects.get_or_create(vendor=vendor, product=product, ptype=ptype)
 
-            quotation = form.save(commit=False)
-            quotation.vendorproduct = vendorproduct
-            quotation.save()
-            return redirect('chemical:vendor_detail', vendor_id)
+                quotation = form.save(commit=False)
+                quotation.vendorproduct = vendorproduct
+                quotation.save()
+                return redirect('chemical:vendor_detail', vendor_id)
     else:
         vendor_id = request.GET.get('vendor_id')
         vendor = Vendor.objects.get(id=vendor_id)
-        form = QuotationForm(initial={'vendor':vendor_id, 'vendor_name':vendor.cn_name})
+        form = QuotationProductForm(initial={'vendor':vendor_id, 'vendor_name':vendor.cn_name})
     return render(request, template_name, {'form':form})
 
 # Quotaion 가격만 변경할 때.
@@ -97,7 +97,6 @@ def quotation_simpleadd(request):
                     vendorproduct=old.vendorproduct, 
                     price=newprice,
                     effective_date=old.effective_date,
-                    # ptype=old.ptype,
                     currency=old.currency,
                     payterm=old.payterm,
                     status='V',
@@ -132,8 +131,7 @@ def quotation_update(request, template_name='products/quotation_update.html'):
         quotation_id = request.GET.get('quotation')
         oldquotation = Quotation.objects.select_related('vendorproduct__vendor', 
                 'vendorproduct__product').get(id=quotation_id)
-        # initial={'quotation':quotation, 'product':product}
-        print("INVALID")
+
         form = QuotationUpdateForm(initial={
                     'quotation':oldquotation.id, 
                     'vendor':oldquotation.vendorproduct.vendor.id, 

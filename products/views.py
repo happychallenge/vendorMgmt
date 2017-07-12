@@ -4,7 +4,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 
 from .models import Vendor, Product, Contact, VendorProduct, Sourcing
-from .forms import VendorForm, ProductForm, ContactForm, SourcingForm
+from .forms import VendorForm, ProductForm, ContactForm
+from .forms import SourcingPriceForm, SourcingProductForm, SourcingSimpleForm
 # Create your views here.
 
 ###############################################
@@ -68,32 +69,95 @@ def sourcingvendor_detail(request, id):
     return render(request, 'products/sourcingvendor_detail.html', 
             {'vendor': vendor, 'vendorproducts': vendorproducts})
 
-# 신규 Sourcing을 생성할 때.
-@staff_member_required
-def sourcing_add(request, template_name='products/sourcing_add.html'):
 
+# 신규로 상품과 가격(RMB) 을 모두 생성할 때.
+@staff_member_required
+def sourcing_productadd(request, template_name='products/sourcing_productadd.html'):
     if request.method == 'POST':
-        print("11111")
-        vendorproduct_id = request.POST.get('vendorproduct')
-        vendorproduct = VendorProduct.objects.select_related("vendor").get(id=vendorproduct_id)
-        form = SourcingForm(request.POST)
+        form = SourcingProductForm(request.POST)
+        
+        if form.is_valid():
+            vendor_id = form.cleaned_data.get('vendor')
+            product_id = form.cleaned_data.get('product')
+            ptype = form.cleaned_data.get('ptype')
+
+            if product_id and vendor_id:
+                vendor = get_object_or_404(Vendor, id=vendor_id)
+                product = get_object_or_404(Product, en_name=product_id)
+                vendorproduct, created = VendorProduct.objects.get_or_create(vendor=vendor, product=product, ptype=ptype)
+
+                quotation = form.save(commit=False)
+                quotation.vendorproduct = vendorproduct
+                quotation.save()
+                return redirect('chemical:sourcingvendor_detail', vendor_id)
+    else:
+        vendor_id = request.GET.get('vendor_id')
+        vendor = get_object_or_404(Vendor, id=vendor_id)
+        form = SourcingProductForm(initial={
+                    'vendor':vendor_id, 
+                    'vendor_name':vendor.en_name
+                })
+    return render(request, template_name, {'form':form})
+
+
+# 신규 Sourcing Price 만  추가할 때.
+@staff_member_required
+def sourcing_priceadd(request, template_name='products/sourcing_priceadd.html'):
+    if request.method == 'POST':
+        vendor_id = request.POST.get('vendor')
+        product_id = request.POST.get('product')
+        ptype = request.POST.get('ptype')
+        form = SourcingPriceForm(request.POST)
 
         if form.is_valid():
-            print("Valid 11111111111111")
+
+            vendorproduct = VendorProduct.objects.select_related("vendor").filter(
+                    vendor=vendor_id, product=product_id, ptype=ptype
+                )[0]
+            # print("Form Error : = ", form.)
             sourcing = form.save(commit=False)
             sourcing.vendorproduct = vendorproduct
             sourcing.save()
-            return redirect('chemical:sourcingvendor_detail', vendorproduct.vendor.id)
+            return redirect('chemical:sourcingvendor_detail', vendorproduct.vendor_id)
     else:
         vendorproduct_id = request.GET.get('vendorproduct')
         vendorproduct = VendorProduct.objects.select_related("vendor", "product").get(id=vendorproduct_id)
-        form = SourcingForm(initial={
-                    'vendorproduct': vendorproduct.id, 
+        form = SourcingPriceForm(initial={
+                    'vendor': vendorproduct.vendor_id,
+                    'product': vendorproduct.product_id,
                     'vendor_name': vendorproduct.vendor.en_name,
                     'product_name': vendorproduct.product.en_name,
                     'ptype': vendorproduct.ptype,
                 })
     return render(request, template_name, {'form':form})
+
+
+# Quotaion 가격만 변경할 때.
+@staff_member_required
+def sourcing_simpleadd(request):
+    if request.method == 'POST':
+        form = SourcingSimpleForm(request.POST)
+        
+        if form.is_valid():
+            sourcing = form.cleaned_data.get('sourcing')
+            vendor_id = form.cleaned_data.get('vendor')
+            newprice = form.cleaned_data.get('newprice')
+
+            if sourcing and newprice:
+                old = get_object_or_404(Sourcing, id=sourcing)
+                old.status = 'I'        # 기존 견적을 Invlid 
+                old.save()
+
+                sourcing = Sourcing.objects.create(
+                    vendorproduct=old.vendorproduct, 
+                    buying_price=newprice,
+                    effective_date=old.effective_date,
+                    payterm=old.payterm,
+                    status='V',
+                    comments=old.comments,
+                )
+    
+    return redirect('chemical:sourcingvendor_detail', vendor_id)
 
 
 ###############################################

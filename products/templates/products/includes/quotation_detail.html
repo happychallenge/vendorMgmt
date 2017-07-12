@@ -58,7 +58,7 @@
         {% if user.is_staff %}
             <tr> 
                 <td colspan=2> 
-                   <button class='btn btn-primary add-product' data-url="{% url 'chemical:quotation_add' %}?vendor_id={{vendor.id}}"> 
+                   <button class='btn btn-primary add-product' data-url="{% url 'chemical:quotation_productadd' %}?vendor_id={{vendor.id}}"> 
                         <span class="glyphicon glyphicon-plus"></span> ADD PRODUCT & QUOTATION 
                     </button> 
 

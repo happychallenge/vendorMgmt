@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Vendor, Tag, Contact, Category, Product, VendorProduct, Quotation
+from .models import Vendor, Tag, Contact, Category, Product, VendorProduct
+from .models import Quotation, Sourcing, Packing
 
 
 @admin.register(Vendor)
@@ -10,11 +11,13 @@ class VendorAdmin(admin.ModelAdmin):
         model = Vendor
     list_display = ['id', 'cn_name', 'en_name', 'companytype', 'status']
 
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     class Meta:
         model = Tag
     list_display = ['tag', ]
+
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
@@ -29,11 +32,13 @@ class CategoryAdmin(admin.ModelAdmin):
         model = Category
     list_display = ['cn_name', 'en_name']
 
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     class Meta:
         model = Product
     list_display = ['cn_name', 'en_name', 'category']
+
 
 @admin.register(VendorProduct)
 class VendorProductAdmin(admin.ModelAdmin):
@@ -47,6 +52,7 @@ def update_quote_invalid(modeladmin, request, queryset):
     queryset.update(status='I')
 update_quote_invalid.short_description = 'Update Quotaion In-Valid'
 
+
 @admin.register(Quotation)
 class QuotationAdmin(admin.ModelAdmin):
     class Meta:
@@ -55,6 +61,21 @@ class QuotationAdmin(admin.ModelAdmin):
     actions = [ update_quote_invalid ]
     search_fields = [ 'vendorproduct__vendor__en_name', 'vendorproduct__product__en_name']
 
+
+@admin.register(Sourcing)
+class SourcingAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Sourcing
+    list_display = ['vendorproduct', 'buying_price', 'sales_price', 'quote_date', 'effective_date', 'status']
+    actions = [ update_quote_invalid ]
+    search_fields = [ 'vendorproduct__vendor__en_name', 'vendorproduct__product__en_name']
+
+
+@admin.register(Packing)
+class PackingAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Packing
+    list_display = ['product', 'ptype', 'packing_type', 'unit_weight', 'pallet_weight']
 
 
 # def update_exchange_rate(modeladmin, request, queryset):
