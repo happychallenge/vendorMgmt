@@ -1,0 +1,15 @@
+<div class="form-group{% if form.username.errors %} has-error{% endif %}">
+  <label>Email</label> 
+  <input type="email" id='username' name="username" placeholder="Enter email" class="form-control">
+  {% for error in form.username.errors %}
+      <label class="control-label">{{ error }}</label>
+  {% endfor %}
+</div>
+
+<div class="form-group{% if form.password.errors %} has-error{% endif %}">
+  <label>Password</label> 
+  <input type="password" id='password' name="password" placeholder="Enter password" class="form-control">
+  {% for error in form.password.errors %}
+      <label class="control-label">{{ error }}</label>
+  {% endfor %}
+</div>

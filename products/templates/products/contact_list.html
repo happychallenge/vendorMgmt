@@ -52,7 +52,7 @@
                             <th>MOBILE</th>
                             <th>EMAIL</th>
                             <th>WECHAT</th>
-                            <th>QQ</th>
+                            <th>PICTURE</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -68,7 +68,9 @@
                             <td> {{contact.mobile }} </td>
                             <td> {{contact.email }} </td>
                             <td> {{contact.wechat }} </td>
-                            <td> {{contact.qq }} </td>
+                            <td> {{contact.qq }} 
+                                <img alt="image" width="100" class="img-circle" src="{% if contact.picture %} {{ contact.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}">
+                            </td>
                         </tr>
                     {% endfor %}
                         
@@ -106,7 +108,7 @@
     <script>
         $(document).ready(function(){
             $('.contact-list').DataTable({
-                pageLength: 20,
+                pageLength: 50,
                 responsive: true,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [

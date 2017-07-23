@@ -135,7 +135,7 @@
                                         <th>NAME </th>
                                         <th>TYPE </th>
                                         <th>BUYING <br> PRICE</th>
-                                        <th>SALES <br> PRICE</th>
+                                        <th>USD <br> PRICE</th>
                                         <th>PAY TERM</th>
                                         <th>QUOTATION DATE</th>
                                         <th>STATUS</th>
@@ -150,8 +150,8 @@
                                     <tr>
                                         <td> {{vdproduct.product}} </td>
                                         <td> {{vdproduct.ptype }} </td>
-                                        <td style="text-align:right"> {{sourcing.buying_price}}</td>
-                                        <td style="text-align:right"> {{sourcing.sales_price}}</td>
+                                        <td style="text-align:right"> {{sourcing.buying_price|floatformat:2}}</td>
+                                        <td style="text-align:right"> {{sourcing.usd_price|floatformat:2}}</td>
                                         <td> {{sourcing.payterm}}</td>
                                         <td> {{sourcing.quote_date|date:'Y/m/d'}} </td>
                                         <td> {{sourcing.status}} </td>
@@ -223,7 +223,7 @@
                                                         <th>ID </th>
                                                         <th>TYPE </th>
                                                         <th>BUYING <br> PRICE</th>
-                                                        <th>SALES <br> PRICE </th>
+                                                        <th>USD <br> PRICE </th>
                                                         <th>PAY TERM</th>
                                                         <th>QUOTATION DATE</th>
                                                         <th>EFFIVE DATE</th>
@@ -236,8 +236,8 @@
                                                     <tr class='sub{% if sourcing.status == 'I' %} invlid{% endif %}'>
                                                         <td> {{forloop.counter }} </td>
                                                         <td> {{vendorProduct.ptype}}</td>
-                                                        <td style="text-align:right"> {{sourcing.buying_price}}</td>
-                                                        <td style="text-align:right"> {{sourcing.sales_price}}</td>
+                                                        <td style="text-align:right"> {{sourcing.buying_price|floatformat:2}}</td>
+                                                        <td style="text-align:right"> {{sourcing.usd_price|floatformat:2}}</td>
                                                         <td> {{sourcing.payterm}}</td>
                                                         <td> {{sourcing.quote_date|date:'Y/m/d'}} </td>
                                                         <td> {{sourcing.effective_date|date:'Y/m/d'}} </td>

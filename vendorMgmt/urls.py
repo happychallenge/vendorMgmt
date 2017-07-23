@@ -16,9 +16,9 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
-from django.contrib.auth import views as login_views
 from django.conf.urls.static import static
 from django.shortcuts import redirect
+# from django.contrib.auth import views as login_views
 
 from authentication import views as signup_views
 
@@ -26,11 +26,13 @@ urlpatterns = [
     url('^$', lambda r: redirect('/chemical/vendors/'), name='home'),
     url(r'^xmlyoon/', admin.site.urls),
     url(r'^chemical/', include('products.urls', namespace='chemical')),
+    url(r'^allocation/', include('allocation.urls', namespace='allocation')),
     url(r'^authentication/', include('authentication.urls', namespace='authentication')),
+    url(r'^order/', include('order.urls', namespace='order')),
 
     url(r'^signup/$', signup_views.signup, name='signup'),
-    url(r'^login', login_views.login, {'template_name': 'authentication/login.html'},
-        name='login'),
+    url(r'^login', signup_views.login, name='login'),
+    url(r'^logout', signup_views.logout, name='logout'),
 ]
 
 if settings.DEBUG:

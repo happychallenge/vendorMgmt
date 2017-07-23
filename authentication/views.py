@@ -4,10 +4,45 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import auth
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from PIL import Image
 
-from .forms import SignUpForm, ProfileForm
+from products.models import Vendor, Product, Contact
+from .forms import SignUpForm, ProfileForm, LoginForm
+
+def login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(
+                    username=request.POST['email'],
+                    password=request.POST['password']
+                )
+            if user is not None and user.is_active:
+                auth.login(request, user)
+                request.session['NumberOfVendor'] = Vendor.objects.filter(gprelation='CURRENT').count()
+                request.session['NumberOfProduct'] = Product.objects.count()
+                request.session['NumberOfContact'] = Contact.objects.count()
+                return redirect('home')
+            else:
+                return redirect('login')
+    else:
+        form  =  LoginForm()
+
+    return render(request, 'authentication/login.html', {'form':form})
+
+
+def logout(request):
+    auth.logout(request)
+    try:
+        del request.session['NumberOfVendor']
+        del request.session['NumberOfProduct']
+        del request.session['NumberOfContact']
+    except KeyError:
+        pass
+    return redirect('login')
 
 
 def signup(request):

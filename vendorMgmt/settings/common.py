@@ -39,14 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+# I appended    
+    # 'django.contrib.sites',
+    # 'django.contrib.sitemaps',
+    
 # 3rd Party
     'bootstrap3',
 
 # User
     'products',
     'authentication',
-    # 'order',
-
+    'order',
+    'allocation',
 ]
 
 MIDDLEWARE = [
@@ -89,17 +93,27 @@ WSGI_APPLICATION = 'vendorMgmt.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ChemCmpy',
+#         'USER': 'chemcmpy',
+#         'PASSWORD': 'chemcmpy00',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ChemCmpy',
-        'USER': 'chemcmpy',
-        'PASSWORD': 'chemcmpy00',
+        'NAME': 'vendorMgmt',
+        'USER': 'vendorMgmt',
+        'PASSWORD': 'Wjdgml00',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -134,5 +148,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 LOGIN_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = reverse_lazy('home')
-# LOGOUT_URL = reverse_lazy('logout')
+LOGOUT_URL = reverse_lazy('logout')
 

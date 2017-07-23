@@ -1,5 +1,7 @@
 from django import forms
 from django.forms import Textarea
+from django.utils.html import mark_safe
+from django.template import Template
 
 from .models import Vendor, Product, Contact, Quotation, Sourcing
 
@@ -13,10 +15,19 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = '__all__'
 
+class PictureWidget(forms.widgets.Widget):
+    def render(self, name, value, attrs=None):
+        html = Template("""<img src='$link'/>""")
+        return mark_safe(html.render(link=value))
+
+
 class ContactForm(forms.ModelForm):
+    # picture = forms.ImageField(widget=PictureWidget)
+
     class Meta:
         model = Contact
-        fields = '__all__'
+        fields = [ 'user', 'vendor', 'cn_name', 'en_name', 'role', 'picture', 
+                'email', 'mobile', 'fixed', 'wechat', 'qq']
 
 class QuotationProductForm(forms.ModelForm):
 

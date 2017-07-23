@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static bootstrap3 %}
+
+{% block title %}
+    PRODUCT DEMAND ADD
+{% endblock title %}
+
+{% block css %}
+    <link href="{% static 'css/iCheck/custom.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dataTables/datatables.min.css' %}" rel="stylesheet">
+{% endblock css %}
+
+
+{% block header-index %}
+    <h2> Demand SUM </h2>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}">Home</a>  
+        </li>
+        <li>
+            PRODUCT
+        </li>
+        <li class="active">
+            <strong>Demand SUM</strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block mainContent %}
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Demand SUM </h5>
+                <div class="ibox-tools">
+
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">Config option 1</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ibox-content"> 
+                <table class="table table-striped table-bordered table-hover product-list" >
+                    <thead>
+                        <tr>
+                            <th> PRODUCT NAME </th>
+                            <th>M</th>
+                            <th>M+1</th>
+                            <th>M+2</th>
+                            <th>M+3</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for product in product_list %}
+                        <tr>
+                            <td>{{product.en_name|upper}}</td>
+                        {% for item in year_month %}
+                            <td> 
+                                <a href="{% url 'allocation:product_demandsupply_detail' product.id item %}">
+                                <button class='btn btn-primary'> {{item}} </button></a>
+                            </td>
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div> <!-- class="ibox-content" -->
+        </div> <!-- class="ibox float-e-margins" -->
+    </div> <!-- class="col-lg-12" -->
+        
+{% endblock mainContent %}
+
+
+
+{% block javascript %}
+    <script src="{% static 'js/plugins/dataTables/datatables.min.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+
+    <script>
+        $(document).ready(function(){
+            $('.product-list').DataTable({
+                pageLength: 50,
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    {extend: 'excel', title: 'ProductList'},
+                    {extend: 'pdf', title: 'ProductList'},
+                    {extend: 'print',
+                     customize: function (win){
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });
+        });
+    </script>    
+
+{% endblock javascript %}
+
+</body>
+
+</html>

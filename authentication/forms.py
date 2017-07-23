@@ -38,6 +38,7 @@ def validate_password_strength(value):
     if not any(char.isalpha() for char in value):
         raise ValidationError(_('Password must contain at least 1 letter.'))
 
+
 class SignUpForm(forms.ModelForm):
     username = forms.CharField(
         widget=forms.HiddenInput())  # noqa: E261
@@ -79,19 +80,13 @@ class SignUpForm(forms.ModelForm):
         return self.cleaned_data
 
 
-# records/forms.py
-#
-# class ArticleForm(forms.ModelForm):
-#   title = forms.CharField(
-#       widgets = forms.TextInput(attrs={'class':'form-control'}), max_length=255)
-#   title = forms.CharField(
-#       widgets = forms.HiddenInput()
-#   title = forms.CharField(
-#       widgets = forms.Textarea(attrs={'class':'form-control'}), max_length=4000)
-#   title = forms.CharField(
-#       widgets = forms.TextInput(attrs={'class':'form-control'}), max_length=4000, required=False, help_text='.....')
-#
-#
+class LoginForm(forms.Form):
+    email = forms.CharField(
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+        required=True,
+        max_length=75)
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 
 class ProfileForm(forms.ModelForm):

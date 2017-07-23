@@ -106,7 +106,6 @@
 {% endblock mainContent %}
 
 
-
 {% block javascript %}
     
     <script src="{% static 'js/plugins/dataTables/datatables.min.js' %}"></script>
@@ -119,7 +118,7 @@
     <script>
         $(document).ready(function(){
             $('.vendor-list').DataTable({
-                pageLength: 20,
+                pageLength: 50,
                 responsive: true,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [

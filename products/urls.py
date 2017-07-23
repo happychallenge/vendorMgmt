@@ -32,4 +32,11 @@ urlpatterns = [
     url(r'^sourcing/productadd/$', views.sourcing_productadd, name='sourcing_productadd'),
     url(r'^sourcing/simpleadd/$', views.sourcing_simpleadd, name='sourcing_simpleadd'),
     # url(r'^sourcing/update/(?P<id>\d+)/$', views.vendor_update, name='vendor_update'),
+
+# PRODUCT
+    url(r'^sourcingproudct/$', views.sourcingproduct_list, name='sourcingproduct_list'),
+    url(r'^sourcingproudct/(?P<id>\d+)/$', views.sourcingproduct_detail, name='sourcingproduct_detail'),
+    # url(r'^product/add/$', views.product_add, name='product_add'),
+    # url(r'^products/update/(?P<id>\d+)/$', views.product_update, name='product_update'),
+
 ]

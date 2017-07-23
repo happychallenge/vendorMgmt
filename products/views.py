@@ -13,8 +13,15 @@ from .forms import SourcingPriceForm, SourcingProductForm, SourcingSimpleForm
 ###############################################
 @login_required
 def vendor_list(request):
-    vendor_list = Vendor.objects.prefetch_related('tags').all()
-    return render(request, 'products/vendor_list.html', {'vendor_list': vendor_list})
+    vendor_list = Vendor.objects.prefetch_related('tags').filter(gprelation='CURRENT')
+    context = {
+        'vendor_list': vendor_list,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'Vendor',
+    }
+    return render(request, 'products/vendor_list.html', context)
 
 
 @login_required
@@ -22,8 +29,15 @@ def vendor_detail(request, id):
     # vendor = get_object_or_404(vendor, id=id)
     vendor = Vendor.objects.prefetch_related('vendorproduct_set', 'contact_set').get(id=id)
     vendorproducts = VendorProduct.objects.prefetch_related('quotation_set').filter(vendor=vendor)
-    return render(request, 'products/vendor_detail.html', 
-            {'vendor': vendor, 'vendorproducts': vendorproducts})
+    context = {
+        'vendor': vendor, 
+        'vendorproducts': vendorproducts,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'Vendor',
+    }
+    return render(request, 'products/vendor_detail.html', context)
 
 
 @staff_member_required
@@ -36,7 +50,14 @@ def vendor_add(request, template_name='products/vendor_add.html'):
             return redirect('chemical:vendor_list')
     else:
         form = VendorForm()
-    return render(request, template_name, {'form':form})
+        context = {
+            'form':form,
+            'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+            'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+            'NumberOfContact' : request.session.get('NumberOfContact',''),
+            'active' : 'Vendor',
+        }
+    return render(request, template_name, context)
 
 
 @staff_member_required
@@ -50,7 +71,14 @@ def vendor_update(request, id, template_name='products/vendor_add.html'):
             return redirect('chemical:vendor_list')
     else:
         form = VendorForm(instance=vendor)
-    return render(request, template_name, {'form':form})
+        context = {
+            'form':form,
+            'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+            'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+            'NumberOfContact' : request.session.get('NumberOfContact',''),
+            'active' : 'Vendor',
+        }
+    return render(request, template_name, context )
 
 
 ###############################################
@@ -59,13 +87,28 @@ def vendor_update(request, id, template_name='products/vendor_add.html'):
 @login_required
 def sourcingvendor_list(request):
     vendor_list = Vendor.objects.prefetch_related('tags').all()
-    return render(request, 'products/sourcingvendor_list.html', {'vendor_list': vendor_list})
+    context = {
+        'vendor_list': vendor_list,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'Sourcing',
+    }
+    return render(request, 'products/sourcingvendor_list.html', context)
 
 @login_required
 def sourcingvendor_detail(request, id):
     # vendor = get_object_or_404(vendor, id=id)
     vendor = Vendor.objects.prefetch_related('vendorproduct_set', 'contact_set').get(id=id)
     vendorproducts = VendorProduct.objects.prefetch_related('sourcing_set').filter(vendor=vendor)
+    context = {
+        'vendor': vendor, 
+        'vendorproducts': vendorproducts,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'Sourcing',
+    }
     return render(request, 'products/sourcingvendor_detail.html', 
             {'vendor': vendor, 'vendorproducts': vendorproducts})
 
@@ -81,14 +124,19 @@ def sourcing_productadd(request, template_name='products/sourcing_productadd.htm
             product_id = form.cleaned_data.get('product')
             ptype = form.cleaned_data.get('ptype')
 
+            buying_price = form.cleaned_data.get('buying_price')
+
             if product_id and vendor_id:
                 vendor = get_object_or_404(Vendor, id=vendor_id)
                 product = get_object_or_404(Product, en_name=product_id)
                 vendorproduct, created = VendorProduct.objects.get_or_create(vendor=vendor, product=product, ptype=ptype)
 
-                quotation = form.save(commit=False)
-                quotation.vendorproduct = vendorproduct
-                quotation.save()
+                sourcing = form.save(commit=False)
+                sourcing.vendorproduct = vendorproduct
+                rate_taxrefund = int(product.rate_taxrefund)/100
+                sourcing.usd_price = (buying_price - 
+                                    (buying_price/1.17*rate_taxrefund))/6.70
+                sourcing.save()
                 return redirect('chemical:sourcingvendor_detail', vendor_id)
     else:
         vendor_id = request.GET.get('vendor_id')
@@ -97,7 +145,14 @@ def sourcing_productadd(request, template_name='products/sourcing_productadd.htm
                     'vendor':vendor_id, 
                     'vendor_name':vendor.en_name
                 })
-    return render(request, template_name, {'form':form})
+        context = {
+            'form': form, 
+            'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+            'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+            'NumberOfContact' : request.session.get('NumberOfContact',''),
+            'active' : 'Sourcing',
+        }
+    return render(request, template_name, context)
 
 
 # 신규 Sourcing Price 만  추가할 때.
@@ -111,12 +166,17 @@ def sourcing_priceadd(request, template_name='products/sourcing_priceadd.html'):
 
         if form.is_valid():
 
+            buying_price = form.cleaned_data.get('buying_price')
+
             vendorproduct = VendorProduct.objects.select_related("vendor").filter(
                     vendor=vendor_id, product=product_id, ptype=ptype
                 )[0]
             # print("Form Error : = ", form.)
             sourcing = form.save(commit=False)
             sourcing.vendorproduct = vendorproduct
+            rate_taxrefund = int(vendorproduct.product.rate_taxrefund)/100
+            sourcing.usd_price = (buying_price - 
+                                (buying_price/1.17*rate_taxrefund))/6.70
             sourcing.save()
             return redirect('chemical:sourcingvendor_detail', vendorproduct.vendor_id)
     else:
@@ -129,7 +189,14 @@ def sourcing_priceadd(request, template_name='products/sourcing_priceadd.html'):
                     'product_name': vendorproduct.product.en_name,
                     'ptype': vendorproduct.ptype,
                 })
-    return render(request, template_name, {'form':form})
+        context = {
+            'form': form, 
+            'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+            'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+            'NumberOfContact' : request.session.get('NumberOfContact',''),
+            'active' : 'Sourcing',
+        }
+    return render(request, template_name, context)
 
 
 # Quotaion 가격만 변경할 때.
@@ -148,9 +215,14 @@ def sourcing_simpleadd(request):
                 old.status = 'I'        # 기존 견적을 Invlid 
                 old.save()
 
+                rate_taxrefund = int(old.vendorproduct.product.rate_taxrefund)/100
+                usd_price = (newprice - 
+                                    (newprice/1.17*rate_taxrefund))/6.70
+
                 sourcing = Sourcing.objects.create(
                     vendorproduct=old.vendorproduct, 
                     buying_price=newprice,
+                    usd_price=usd_price,
                     effective_date=old.effective_date,
                     payterm=old.payterm,
                     status='V',
@@ -160,18 +232,69 @@ def sourcing_simpleadd(request):
     return redirect('chemical:sourcingvendor_detail', vendor_id)
 
 
+@login_required
+def sourcingproduct_list(request):
+    product_list = Product.objects.prefetch_related("vendorproduct_set").all()
+    context = {
+        'product_list': product_list,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'SourcingProduct',
+    }
+    return render(request, 'products/sourcingproduct_list.html', context)
+
+@login_required
+def sourcingproduct_detail(request, id):
+    product = get_object_or_404(Product, id=id)
+    context = {
+        'product': product,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'SourcingProduct',
+    }
+    return render(request, 'products/sourcingproduct_detail.html', context)
+
+
+
 ###############################################
 ########### PRODUCT 
 ###############################################
+from datetime import date
+
 @login_required
 def product_list(request):
     product_list = Product.objects.all()
-    return render(request, 'products/product_list.html', {'product_list': product_list})
+    today = date.today()
+    year = today.year
+    month = today.month 
+    if month < 11:
+        year_month = [ "{}/{}".format(year, x) for x in range(month+1, month+4) ]
+
+    context = {
+        'product_list': product_list,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'Product',
+        'year_month':year_month,
+    }
+    return render(request, 'products/product_list.html', context)
+
 
 @login_required
 def product_detail(request, id):
     product = get_object_or_404(Product, id=id)
-    return render(request, 'products/product_detail.html', {'product': product})
+    context = {
+        'product': product,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'Product',
+    }
+    return render(request, 'products/product_detail.html', context)
+
 
 @staff_member_required
 def product_add(request, template_name='products/product_add.html'):
@@ -183,8 +306,14 @@ def product_add(request, template_name='products/product_add.html'):
             return redirect('chemical:product_list')
     else:
         form = ProductForm()
-
-    return render(request, template_name, {'form':form})
+        context = {
+            'form': form,
+            'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+            'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+            'NumberOfContact' : request.session.get('NumberOfContact',''),
+            'active' : 'Product',
+        }
+    return render(request, template_name, context)
 
 @staff_member_required
 def product_update(request, id, template_name='products/product_add.html'):
@@ -197,8 +326,14 @@ def product_update(request, id, template_name='products/product_add.html'):
             return redirect('chemical:product_list')
     else:
         form = ProductForm(instance=product)
-
-    return render(request, template_name, {'form':form})
+        context = {
+            'form': form,
+            'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+            'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+            'NumberOfContact' : request.session.get('NumberOfContact',''),
+            'active' : 'Product',
+        }
+    return render(request, template_name, context)
 
 
 ###############################################
@@ -207,7 +342,14 @@ def product_update(request, id, template_name='products/product_add.html'):
 @login_required
 def contact_list(request):
     contact_list = Contact.objects.select_related('vendor').all()
-    return render(request, 'products/contact_list.html', {'contact_list': contact_list})
+    context = {
+        'contact_list': contact_list,
+        'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+        'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+        'NumberOfContact' : request.session.get('NumberOfContact',''),
+        'active' : 'Contact',
+    }
+    return render(request, 'products/contact_list.html', context)
 
 
 @staff_member_required
@@ -220,23 +362,35 @@ def contact_add(request, template_name='products/contact_add.html'):
             return redirect('chemical:contact_list')
     else:
         form = ContactForm()
-
-    return render(request, template_name, {'form':form})
+        context = {
+            'form': form,
+            'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+            'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+            'NumberOfContact' : request.session.get('NumberOfContact',''),
+            'active' : 'Contact',
+        }
+    return render(request, template_name, context)
 
 
 @staff_member_required
 def contact_update(request, id, template_name='products/contact_add.html'):
     contact = get_object_or_404(Contact, id=id)
     if request.method == 'POST':
-        form = ContactForm(request.POST, instance=contact)
+        form = ContactForm(request.POST, request.FILES, instance=contact)
         if form.is_valid():
             contact = form.save()
             messages.success(request, 'contact was successfully updated!!!')
             return redirect('chemical:contact_list')
     else:
         form = ContactForm(instance=contact)
-
-    return render(request, template_name, {'form':form})
+        context = {
+            'form': form,
+            'NumberOfVendor' : request.session.get('NumberOfVendor',''),
+            'NumberOfProduct' : request.session.get('NumberOfProduct',''),
+            'NumberOfContact' : request.session.get('NumberOfContact',''),
+            'active' : 'Contact',
+        }
+    return render(request, template_name, context)
 
 
 

@@ -1,6 +1,19 @@
 from django.db import models
 from django.conf import settings
 
+class Location(models.Model):
+    """docstring for Location"""
+    """ 설명 """
+    en_name = models.CharField(max_length=20)
+    cn_name = models.CharField(max_length=10)
+
+    class Meta:
+        ordering = ['en_name']
+
+    def __str__(self):
+        return self.en_name
+
+
 # Create your models here.
 class Vendor(models.Model):
     """docstring for Provider"""
@@ -41,12 +54,14 @@ class Vendor(models.Model):
     status = models.CharField(max_length=10, choices=STATUS, default=ACTIVE)
     gprelation = models.CharField(max_length=20, choices=GPRELATION, default=CURRENT, verbose_name='GP RELATION')
     companytype = models.CharField(max_length=20, choices=COMPANYTYPE, default=MANUFACTURER)
+    location = models.ForeignKey(Location, blank=True, null=True)
+    city = models.CharField(max_length=20, blank=True, null=True)
     tags = models.ManyToManyField('Tag', blank=True)
     comments = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = [ 'gprelation', 'cn_name' ]
+        ordering = [ 'en_name' ]
 
     def __str__(self):
         return self.en_name
@@ -80,7 +95,7 @@ class Contact(models.Model):
     cn_name = models.CharField(max_length=30, verbose_name='CHINESE NAME')
     en_name = models.CharField(max_length=30, blank=True, null=True, verbose_name='ENGLISH NAME')
     role = models.CharField(max_length=2, choices=ROLE, default=SALESMAN)
-    picture = models.ImageField(upload_to='user_profile/', blank=True, null=True)
+    picture = models.ImageField(upload_to='contact_profile/', blank=True, null=True)
 
     email = models.EmailField(blank=True, null=True)
     mobile = models.CharField(max_length=30, blank=True, null=True)
@@ -90,8 +105,11 @@ class Contact(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['cn_name']
+
     def __str__(self):
-        return self.en_name
+        return self.cn_name
 
 
 class Category(models.Model):
@@ -227,7 +245,7 @@ class Quotation(models.Model):
     comments = models.TextField(blank=True, null=True)
 
     class Meta:
-        ordering = [ '-status', '-quote_date', ]
+        ordering = [ 'vendorproduct', '-status', '-quote_date', ]
 
     def __str__(self):
         return "{}".format(self.vendorproduct)
@@ -260,6 +278,7 @@ class Sourcing(models.Model):
 
     vendorproduct = models.ForeignKey(VendorProduct)
     buying_price = models.FloatField()
+    usd_price = models.FloatField(blank=True, null=True)
     sales_price = models.FloatField(blank=True, null=True)
     payterm = models.CharField(max_length=20, choices=PAYTERM, default=CASH)
     quote_date = models.DateTimeField(auto_now_add=True)

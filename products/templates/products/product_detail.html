@@ -89,8 +89,8 @@
                         </tr>
                         <tr>
                             <td>CHEMICAL STRUCTURE</td>
-                            <td>
-                                <img src="{{ product.chemstructure.url }}" alt="{{ product.en_name }}"> 
+                            <td> 
+                                <img src="{% if  product.chemstructure %}{{ product.chemstructure.url }}{% endif %}" alt="{{ product.en_name }}"> 
                             </td>
                         </tr>
                         <tr>
