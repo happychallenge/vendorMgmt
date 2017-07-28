@@ -199,6 +199,7 @@
                                      <thead>
                                          <tr>
                                              <th>COMPANY </th>
+                                             <th>HOMEPAGE </th>
                                              <th>TYPE</th>
                                              <th>BUYING PRICE</th>
                                              <th>USD PRICE</th>
@@ -215,6 +216,7 @@
                                         <tr>
                                             
                                             <td> {{vendorproduct.vendor|upper}} </td>
+                                            <td> {{vendorproduct.vendor.homepage}}</td>
                                             <td> {{vendorproduct.ptype }} </td>
                                             <td style="text-align:right"> {{sourcing.buying_price|floatformat:2}}</td>
                                             <td style="text-align:right"> {{sourcing.usd_price|floatformat:2}}</td>

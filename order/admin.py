@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Customer, POrder, POrderItem, PayCondition, Shipping
-from .models import SalesOrder, SalesOrderItem
+from .models import SalesOrder, SalesOrderItem, Packing, Shipping
 # Register your models here.
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
@@ -12,7 +12,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 class POrderItemInline(admin.TabularInline):
     model = POrderItem
-    raw_id_fields = [ 'quotation', 'product']
+    raw_id_fields = [ 'product']
 
 class PayConditionInline(admin.TabularInline):
     model = PayCondition
@@ -26,7 +26,7 @@ class POrderAdmin(admin.ModelAdmin):
         model = POrder
     list_display = ['offer_no', 'name', 'vendor', 'contact', 'total_amount']
     inlines = [
-        POrderItemInline, PayConditionInline, ShippingInline
+        PayConditionInline, POrderItemInline, ShippingInline
     ]
 
 
@@ -43,3 +43,16 @@ class SalesOrderAdmin(admin.ModelAdmin):
         SalesOrderItemInline
     ]
 
+
+@admin.register(Packing)
+class PackingAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Packing
+    list_display = ['product', 'ptype', 'num', 'packing_type', 'unit_weight', 'pallet_weight']
+
+
+@admin.register(Shipping)
+class ShippingAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Shipping
+    list_display = ['id', 'porder', 'destination', 'shipping_date', 'comments']

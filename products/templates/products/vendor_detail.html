@@ -279,7 +279,11 @@
                                 <tbody>
                                 {% for contact in  vendor.contact_set.all %}
                                     <tr>
-                                        <td>{{ contact.cn_name }} - {{ contact.en_name }}</td>
+                                        <td>
+                                            <a href="{% url 'chemical:contact_update' contact.id %}"> 
+                                                {{ contact.cn_name }} - {{ contact.en_name }}
+                                            </a>
+                                        </td>
                                         <td>{{ contact.role }}</td>
                                         <td>{{ contact.mobile }}</td>
                                         <td>{{ contact.email }}</td>

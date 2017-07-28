@@ -11,7 +11,7 @@ class Location(models.Model):
         ordering = ['en_name']
 
     def __str__(self):
-        return self.en_name
+        return self.en_name.upper()
 
 
 # Create your models here.
@@ -47,6 +47,7 @@ class Vendor(models.Model):
 
     cn_name = models.CharField(max_length=50, verbose_name='CHINESE NAME')
     en_name = models.CharField(max_length=50, verbose_name='ENGLISH NAME')
+    simple_name = models.CharField(max_length=20, verbose_name='SIMPLE NAME', blank=True, null=True,)
     cn_address = models.CharField(max_length=100, blank=True, null=True, verbose_name='CHINESE ADDRESS')
     en_address = models.CharField(max_length=200, blank=True, null=True, verbose_name='ENGLISH ADDRESS')
     homepage = models.URLField(blank=True, null=True)
@@ -64,7 +65,7 @@ class Vendor(models.Model):
         ordering = [ 'en_name' ]
 
     def __str__(self):
-        return self.en_name
+        return self.en_name.upper()
 
 
 class Tag(models.Model):
@@ -119,14 +120,14 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.en_name
+        return self.en_name.upper()
 
 class Product(models.Model):
     """docstring for Product"""
     """ 설명 """
     cn_name = models.CharField(max_length=100, verbose_name='CHINESE NAME')
     en_name = models.CharField(max_length=100, verbose_name='ENGLISH NAME')
-    cas_no = models.CharField(max_length=20, verbose_name='CAS NO', blank=True, null=True)
+    cas_no = models.CharField(max_length=30, verbose_name='CAS NO', blank=True, null=True)
     category = models.ForeignKey(Category)
 
     cn_hscode = models.CharField(max_length=15, verbose_name='중국 HS CODE', blank=True, null=True)
@@ -146,7 +147,7 @@ class Product(models.Model):
         ordering = [ 'en_name', ]
 
     def __str__(self):
-        return self.en_name
+        return self.en_name.upper()
 
 
 POWDER = 'POWDER'
@@ -245,7 +246,7 @@ class Quotation(models.Model):
     comments = models.TextField(blank=True, null=True)
 
     class Meta:
-        ordering = [ 'vendorproduct', '-status', '-quote_date', ]
+        ordering = [ 'status', 'price' ]
 
     def __str__(self):
         return "{}".format(self.vendorproduct)

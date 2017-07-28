@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     
 # 3rd Party
     'bootstrap3',
+    'raven.contrib.django.raven_compat',
 
 # User
     'products',

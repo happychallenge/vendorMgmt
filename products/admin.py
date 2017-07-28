@@ -16,7 +16,9 @@ class LocationAdmin(admin.ModelAdmin):
 class VendorAdmin(admin.ModelAdmin):
     class Meta:
         model = Vendor
-    list_display = ['id', 'cn_name', 'en_name', 'companytype', 'status']
+    list_display = ['id', 'cn_name', 'en_name', 'simple_name', 'companytype', 'status']
+    list_editable = ['en_name','simple_name']
+    search_fields = ['en_name', 'cn_name']
 
 
 @admin.register(Tag)
@@ -64,7 +66,7 @@ make_demand_plan.short_description = 'Make DEMAND & SUPPLY Planning'
 class ProductAdmin(admin.ModelAdmin):
     class Meta:
         model = Product
-    list_display = ['cn_name', 'en_name', 'category']
+    list_display = [ 'id', 'cn_name', 'en_name', 'category']
     actions = [make_demand_plan]
 
 
@@ -89,7 +91,7 @@ update_quote_invalid.short_description = 'Update Quotaion In-Valid'
 class QuotationAdmin(admin.ModelAdmin):
     class Meta:
         model = Quotation
-    list_display = ['vendorproduct', 'price', 'currency', 'quote_date', 'effective_date', 'status']
+    list_display = ['id', 'vendorproduct', 'price', 'currency', 'quote_date', 'effective_date', 'status']
     actions = [ update_quote_invalid ]
     search_fields = [ 'vendorproduct__vendor__en_name', 'vendorproduct__product__en_name']
 

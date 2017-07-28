@@ -26,12 +26,17 @@ class POrder(models.Model):
     contact = models.ForeignKey(Contact)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     paid = models.BooleanField(default=False)
-    # fixed = models.BooleanField(default=False)
+    confirmed = models.BooleanField(default=False)
+    fixed = models.BooleanField(default=False)
+    contract_date = models.DateField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ("-contract_date", )
+
     def __str__(self):
-        return "Purchase Order : {}".format(self.id)
+        return self.name
 
 
 POWDER = 'POWDER'
@@ -56,27 +61,46 @@ PACKINGTYPE = (
     (EXTRA, 'EXTRA'),
 )
 
-class POrderItem(models.Model):
-    """docstring for POrderItem"""
+class Packing(models.Model):
+    """docstring for Packing"""
     """ 설명 """
-    porder = models.ForeignKey(POrder)
-    quotation = models.ForeignKey(Quotation, null=True, blank=True)
-    product = models.ForeignKey(Product)
+    product = models.ForeignKey(Product, related_name='packingproduct')
     ptype = models.CharField(max_length=10, choices=TYPE, default=POWDER)
-    amount = models.IntegerField()
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
-    purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
-    packing_type = models.CharField(max_length=10, choices=PACKINGTYPE, default=BAG)
+    num = models.PositiveIntegerField()
+    packing_type = models.CharField(max_length=10, 
+            choices=PACKINGTYPE, default=BAG)
     unit_weight = models.IntegerField()
     pallet_weight = models.IntegerField(default=500)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = (('porder', 'product'),)
+        unique_together = ( 'product', 'ptype', 'num' )
+
+    def __str__(self):
+        return "{} {} {} {}".format(self.product, self.ptype, 
+            self.packing_type, self.unit_weight)
+
+
+class POrderItem(models.Model):
+    """docstring for POrderItem"""
+    """ 설명 """
+    porder = models.ForeignKey(POrder)
+    product = models.ForeignKey(Product)
+    ptype = models.CharField(max_length=10, choices=TYPE, default=POWDER)
+    amount = models.IntegerField()
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
+    packing = models.ForeignKey(Packing, null=True, blank=True )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (('porder', 'product', 'ptype'),)
 
     def __str__(self):
         return "POrder Item : {}".format(self.id)
+
 
 
 class PayCondition(models.Model):
@@ -169,7 +193,7 @@ class Shipping(models.Model):
     )
 
     porder = models.ForeignKey(POrder)
-    sales_order = models.ForeignKey(SalesOrder)
+    sales_order = models.ForeignKey(SalesOrder, blank=True, null=True)
     destination = models.CharField(max_length=10, default=PUSAN, choices=DESTINATION)
     shipping_date = models.DateField(blank=True, null=True)
     comments = models.CharField(max_length=500, blank=True, null=True)
