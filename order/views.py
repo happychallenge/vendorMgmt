@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect, get_list_or_404
 
 from products.models import Product, Quotation
+from event.models import Event
 from .models import POrder, POrderItem
 from .forms import POrderForm, POrderItemForm, POrderItemFormSet, PayConditionForm
 from .forms import PayConditionFormSet, ShippingForm, ShippingFormSet
+
+import re
+from datetime import date, timedelta
+
 # Create your views here.
 def porder_list(request):
     porder_list = POrder.objects.all().order_by('-contract_date')
@@ -33,6 +38,11 @@ def porder_add(request):
             if formset.is_valid():
                 created_porder.save()
                 formset.save()
+
+                # Event 등록
+                event_date = form.cleaned_data.get('contract_date')
+                Event.objects.create(name=created_porder.name, num=created_porder.id, 
+                                etype='CONTRACT', event_date=event_date)
 
             return redirect("order:porderitem_add", id=created_porder.id)
     else:
@@ -87,6 +97,21 @@ def shipping_add(request, id):
             shipping.porder = porder
             shipping.save()
 
+
+            if not Event.objects.filter(num=porder.id, etype='SHIPPING').exists():
+                event_date = shipping_form.cleaned_data.get('shipping_date')
+                Event.objects.create(name=porder.name, num=porder.id, 
+                               etype='SHIPPING', event_date=event_date)
+
+                period = int(re.search('\d+', porder.paycondition.pay_term)[0])
+                event_date = event_date + timedelta(days=period)
+                Event.objects.create(name=porder.name, num=porder.id, 
+                    etype='PAYMENT', event_date=event_date, money=porder.total_amount, currency='$')
+
+                event_date = event_date + timedelta(days=60)
+                Event.objects.create(name=porder.name, num=porder.id, 
+                    etype='TAXREFUND', event_date=event_date)
+            
             return redirect('order:porder_detail', id=id)
     else:
         order_form = POrderForm(instance=porder)

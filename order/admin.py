@@ -24,10 +24,14 @@ class ShippingInline(admin.TabularInline):
 class POrderAdmin(admin.ModelAdmin):
     class Meta:
         model = POrder
-    list_display = ['offer_no', 'name', 'vendor', 'contact', 'total_amount']
+    list_display = [ 'id', 'offer_no', 'name', 'vendor', 'contact', 'total_amount', 'get_payterm']
+    list_display_links = [ 'offer_no', 'name', 'vendor' ]
     inlines = [
         PayConditionInline, POrderItemInline, ShippingInline
     ]
+
+    def get_payterm(self, obj):
+        return obj.paycondition.pay_term
 
 
 class SalesOrderItemInline(admin.TabularInline):

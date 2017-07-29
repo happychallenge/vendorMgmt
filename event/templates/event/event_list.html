@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static bootstrap3 %}
+
+{% block title %}
+    EVENT CALENDAR
+{% endblock title %}
+
+{% block css %}
+    <link href="{% static 'css/iCheck/custom.css' %}" rel="stylesheet">
+    <link href="{% static 'css/plugins/fullcalendar/fullcalendar.css' %}" rel="stylesheet">
+{% endblock css %}
+
+
+{% block header-index %}
+    <h2> EVENT CALENDAR </h2>
+    
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}">Home</a>  
+        </li>
+        <li>
+            EVENT CALENDAR
+        </li>
+        <li class="active">
+            <strong>EVENT CALENDAR</strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block mainContent %}
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>EVENT CALENDAR </h5>
+                <div class="ibox-tools">
+
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">Config option 1</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ibox-content"> 
+                <!-- CALENDAR -->
+                <div id="calendar"></div>
+            </div> <!-- class="ibox-content" -->
+        </div> <!-- class="ibox float-e-margins" -->
+    </div> <!-- class="col-lg-12" -->
+        
+{% endblock mainContent %}
+
+
+
+{% block javascript %}
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+    <script src="{% static 'js/plugins/fullcalendar/moment.min.js' %}"></script>
+    <script src="{% static 'js/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function(){
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay,listWeek'
+                },
+                editable: true,
+                droppable: false, 
+                events: [
+                {% for ev in event_list %}
+                    {
+                        id: {{ev.num}},
+                        title: '{{ev.name}}-{{ev.etype}}',
+                        start: '{{ev.event_date|date:"Y-m-d"}}T{{times|random}}:00:00',
+                        allDay: false,
+                    {% if ev.etype == 'PAYMENT' %}
+                        color: 'red',
+                    {% elif ev.etype == 'TAXREFUND' %}
+                        color: 'blue',
+                    {% elif ev.etype == 'SHIPPING' %}
+                        color: '#23c6c8',
+                    {% endif %} 
+                    },
+                {% endfor %}
+                ]
+            });
+        });
+    </script>
+
+{% endblock javascript %}
+
+</body>
+
+</html>

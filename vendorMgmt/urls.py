@@ -23,12 +23,13 @@ from django.shortcuts import redirect
 from authentication import views as signup_views
 
 urlpatterns = [
-    url('^$', lambda r: redirect('/chemical/vendors/'), name='home'),
+    url('^$', lambda r: redirect('/event'), name='home'),
     url(r'^xmlyoon/', admin.site.urls),
     url(r'^chemical/', include('products.urls', namespace='chemical')),
     url(r'^allocation/', include('allocation.urls', namespace='allocation')),
     url(r'^authentication/', include('authentication.urls', namespace='authentication')),
     url(r'^order/', include('order.urls', namespace='order')),
+    url(r'^event/', include('event.urls', namespace='event')),
 
     url(r'^signup/$', signup_views.signup, name='signup'),
     url(r'^login', signup_views.login, name='login'),

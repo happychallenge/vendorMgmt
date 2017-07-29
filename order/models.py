@@ -130,7 +130,7 @@ class PayCondition(models.Model):
 
     porder = models.OneToOneField(POrder, on_delete=models.CASCADE)
     price_term = models.CharField(max_length=3, choices=PRICETERM, default=CIF)
-    pay_term = models.CharField(max_length=20, choices=PAYTERM, default=TT60)
+    pay_term = models.CharField(max_length=20, choices=PAYTERM)
 
     def __str__(self):
         return "PayTerm {}".format(self.id)
