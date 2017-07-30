@@ -14,6 +14,10 @@
 {% block header-index %}
     <h2> EVENT CALENDAR </h2>
     
+    <a href="{% url 'event:event_timetable' %}"><button class='btn btn-primary pull-right'>
+        <span class="glyphicon glyphicon-list"></span> EVENT TIMETABLE</button>
+    </a> 
+
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}">Home</a>  
@@ -93,8 +97,10 @@
                     {% elif ev.etype == 'TAXREFUND' %}
                         color: 'blue',
                     {% elif ev.etype == 'SHIPPING' %}
-                        color: '#23c6c8',
-                    {% endif %} 
+                        color: 'lazur',
+                    {% else %} 
+                        color: 'navy',
+                    {% endif %}
                     },
                 {% endfor %}
                 ]

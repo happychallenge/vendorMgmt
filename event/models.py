@@ -1,5 +1,6 @@
 from django.db import models
 
+from order.models import POrder
 # Create your models here.
 class Event(models.Model):
     """docstring for Event"""
@@ -18,12 +19,14 @@ class Event(models.Model):
 
     name = models.CharField(max_length=50)
     num = models.PositiveIntegerField()
+    porder = models.ForeignKey(POrder, blank=True, null=True)
     etype = models.CharField(max_length=10, choices=TYPE)
     event_date = models.DateField()
 
     money = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=1, default='$')
-    
+    rmb = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

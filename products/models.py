@@ -107,10 +107,10 @@ class Contact(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['cn_name']
+        ordering = ['en_name']
 
     def __str__(self):
-        return self.cn_name
+        return self.en_name
 
 
 class Category(models.Model):

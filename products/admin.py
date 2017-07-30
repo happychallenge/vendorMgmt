@@ -34,6 +34,7 @@ class ContactAdmin(admin.ModelAdmin):
         model = Contact
     list_display = ['cn_name', 'en_name', 'vendor', 'role', 'mobile', 'email',  'wechat', 'qq']
     search_fields = ['cn_name', 'en_name', 'vendor__en_anme', 'vendor__cn_name']
+    list_editable = [ 'en_name' ]
 
 
 @admin.register(Category)

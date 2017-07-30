@@ -56,7 +56,11 @@
                     <span class="nav-label">CONTACT LIST </span>
                     <span class="label label-info pull-right">{{ NumberOfContact }}</span></a> 
             </li>
-            
+            <li>
+                <a href="https://drive.google.com/open?id=1tBE3AFC6wZmN4gjEeKVsTnzu0Rk&usp=sharing" target='chem'><i class="fa fa-map"></i> 
+                    <span class="nav-label">LOCATION OF VENDORS</span>
+                </a>
+            </li>
         {% if user.is_staff %}
             <li {% if active == 'Sourcing' %}class="landing_link"{% endif %}>
                 <a href="{% url 'chemical:sourcingvendor_list' %}"><i class="fa fa-star"></i> 

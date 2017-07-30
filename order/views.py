@@ -42,7 +42,7 @@ def porder_add(request):
                 # Event 등록
                 event_date = form.cleaned_data.get('contract_date')
                 Event.objects.create(name=created_porder.name, num=created_porder.id, 
-                                etype='CONTRACT', event_date=event_date)
+                        porder=created_porder, etype='CONTRACT', event_date=event_date)
 
             return redirect("order:porderitem_add", id=created_porder.id)
     else:
@@ -97,19 +97,18 @@ def shipping_add(request, id):
             shipping.porder = porder
             shipping.save()
 
-
             if not Event.objects.filter(num=porder.id, etype='SHIPPING').exists():
                 event_date = shipping_form.cleaned_data.get('shipping_date')
-                Event.objects.create(name=porder.name, num=porder.id, 
+                Event.objects.create(name=porder.name, num=porder.id, porder=porder,
                                etype='SHIPPING', event_date=event_date)
 
                 period = int(re.search('\d+', porder.paycondition.pay_term)[0])
                 event_date = event_date + timedelta(days=period)
-                Event.objects.create(name=porder.name, num=porder.id, 
+                Event.objects.create(name=porder.name, num=porder.id, porder=porder,
                     etype='PAYMENT', event_date=event_date, money=porder.total_amount, currency='$')
 
                 event_date = event_date + timedelta(days=60)
-                Event.objects.create(name=porder.name, num=porder.id, 
+                Event.objects.create(name=porder.name, num=porder.id, porder=porder,
                     etype='TAXREFUND', event_date=event_date)
             
             return redirect('order:porder_detail', id=id)
