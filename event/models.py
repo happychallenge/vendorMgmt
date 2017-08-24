@@ -31,3 +31,38 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Cost(models.Model):
+    PROFIT = 'PROFIT'
+    COST = 'COST'
+    CATEGORY = (
+        (PROFIT, 'PROFIT'),
+        (COST, 'COST'),
+    )
+
+    PURCHASE = 'PURCHASE'
+    LOGISTICS = 'LOGISTICS'
+    POSTING = 'POSTING'
+    SALES = 'SALES'
+    TAXREFUND = 'TAXREFUND'
+    EXTRA = 'EXTRA'
+    CTYPE = (
+        (PURCHASE, 'PURCHASE'),
+        (LOGISTICS, 'LOGISTICS'),
+        (POSTING, 'POSTING'),
+        (SALES, 'SALES'),
+        (TAXREFUND, 'TAXREFUND'),
+        (EXTRA, 'EXTRA'),
+    )
+
+    porder = models.ForeignKey(POrder)
+    category = models.CharField(max_length=10, choices=CATEGORY)
+    ctype = models.CharField(max_length=50, choices=CTYPE)
+    cost = models.IntegerField()
+    receipt = models.BooleanField(default=True)
+    happen_at = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{}-{}".format(self.porder, self.ctype )

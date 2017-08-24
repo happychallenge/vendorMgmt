@@ -16,7 +16,7 @@ urlpatterns = [
 
 # CONTACT
     url(r'^contact/$', views.contact_list, name='contact_list'),
-    url(r'^contact/add/$', views.contact_add, name='contact_add'),
+    url(r'^contact/add/(?P<vendor_id>\d+)/$', views.contact_add, name='contact_add'),
     url(r'^contact/update/(?P<id>\d+)/$', views.contact_update, name='contact_update'),
 
 # QUOTATION

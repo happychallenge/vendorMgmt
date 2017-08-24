@@ -2,7 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory
 
 from products.models import Vendor, Contact
-from .models import POrder, POrderItem, PayCondition, Shipping
+from .models import POrder, POrderItem, PayCondition, Shipping, Material
 
 class PayConditionForm(forms.ModelForm):
     class Meta:
@@ -42,3 +42,8 @@ class ShippingForm(forms.ModelForm):
 
 ShippingFormSet = inlineformset_factory(POrder, Shipping, 
             form=ShippingForm, extra=0)
+
+class MaterialForm(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = ['invoice', 'packingList', 'billofLading', 'coa', 'fta_co', 'baoguandan']

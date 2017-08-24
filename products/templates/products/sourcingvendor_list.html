@@ -59,6 +59,7 @@
                     <thead>
                         <tr>
                             <th>NAME </th>
+                            <th>SIMPLE </th>
                             <th>HomePage</th>
                             <th>Status</th>
                             <th>GP<br>RELATIONSHIP</th>
@@ -70,19 +71,22 @@
                     {% for vendor in vendor_list %}
                         <tr class="gradeX">
                             <td>
+                                <a href="{% url 'chemical:sourcingvendor_detail' vendor.id %}">
+                                    {{ vendor.simple_name }}
+                                </a>
+                            </td>
+                            <td>
                                 <a href="{% url 'chemical:sourcingvendor_detail' vendor.id %}">{{ vendor.en_name | upper}} <br> {{ vendor.cn_name }}  </a> 
                             </td>
                             <td>
                             {% if vendor.homepage %}
-                                 <a href="{{ vendor.homepage}}" >{{ vendor.homepage}}</a>
+                                 <a href="{{ vendor.homepage}}" target='chem'>{{ vendor.homepage}}</a>
                             {% endif %} 
                             </td>
                             <td>{{ vendor.status }}</td>
                             <td>{{ vendor.gprelation }}</td>
                             <td class="center"> 
-                        {% for tag in vendor.tags.all %}
-                            {{ tag }}, 
-                        {% endfor %}
+                                {{ vendor.tags.all|join:", " }}, 
                             </td>
                         </tr>
                     {% endfor %}
@@ -90,6 +94,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
+                            <th>Name </th>
                             <th>Name </th>
                             <th>HomePage</th>
                             <th>Status</th>

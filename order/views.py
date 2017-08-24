@@ -1,10 +1,13 @@
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render, redirect, get_list_or_404
+from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
 
 from products.models import Product, Quotation
 from event.models import Event
-from .models import POrder, POrderItem
+from .models import POrder, Shipping
 from .forms import POrderForm, POrderItemForm, POrderItemFormSet, PayConditionForm
-from .forms import PayConditionFormSet, ShippingForm, ShippingFormSet
+from .forms import PayConditionFormSet, ShippingForm, ShippingFormSet, MaterialForm
 
 import re
 from datetime import date, timedelta
@@ -124,3 +127,32 @@ def shipping_add(request, id):
                 'orderformset':orderformset, 'shippingset':shippingset,
                 'shipping_form':shipping_form, 'order_id': porder.id,
             })
+
+
+# @ajax_required
+# @login_required
+def material_file(request):
+    try:
+        if request.method == 'POST':
+            shipping_id = request.POST.get('shipping')
+            shipping = Shipping.objects.get(pk=shipping_id)
+            material_form = MaterialForm(request.POST)
+
+            if material_form.is_valid():
+                material = material_form.save(commit=False)
+                material.shipping = shipping
+                material.save()
+
+            html = render_to_string('order/ajax/material_detail.html',
+                        {'material': material})
+            return HttpResponse(html)
+
+        else:
+            shipping_id = request.GET.get('shipping')
+            material_form = MaterialForm()
+            html = render_to_string('order/ajax/material_add.html',
+                        {'material_form': material_form, 'shipping':shipping_id})
+            return HttpResponse(html)
+
+    except Exception:
+        return HttpResponseBadRequest()

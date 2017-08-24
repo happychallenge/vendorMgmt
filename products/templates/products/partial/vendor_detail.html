@@ -1,0 +1,54 @@
+    <tr class="gradeX">
+        <td>CHINESE NAME</td>
+        <td>{{ vendor.cn_name }}</td>
+    </tr>
+    <tr>
+        <td>ENGLISH NAME</td>
+        <td>{{ vendor.en_name|upper }}</td>
+    </tr>
+    <tr>
+        <td>CHINESE ADDRESS</td>
+        <td>{{ vendor.cn_address }}</td>
+    </tr>
+    <tr>
+        <td>ENGLISH ADDRESS</td>
+        <td>{{ vendor.en_address|upper }}</td>
+    </tr>
+    <tr>
+        <td>COMPANY TYPE</td>
+        <td>{{ vendor.companytype }}</td>
+    </tr>
+    <tr>
+        <td>STATUS</td>
+        <td>{{ vendor.status }}</td>
+    </tr>
+    <tr>
+        <td>GP RELATIONSHIP</td>
+        <td>{{ vendor.gprelation }}</td>
+    </tr>
+    <tr>
+        <td>TELEPHONE</td>
+        <td>{{ vendor.tel }}</td>
+    </tr>
+    <tr>
+        <td>PRODUCT LIST</td>
+        <td>{{ vendor.product_list }}</td>
+    </tr>
+    <tr>
+        <td>HOME PAGE</td>
+        <td>
+        {% if vendor.homepage %}
+             <a href="{{ vendor.homepage }}" target='chem'>{{ vendor.homepage }}</a>
+        {% endif %} 
+        </td>
+    </tr>
+    <tr>
+        <td>TAGS </td>
+        <td class="center"> 
+            {{ vendor.tags.all|join:", " }}, 
+        </td>
+    </tr>
+    <tr>
+        <td>COMMENTS</td>
+        <td>{{ vendor.comments }}</td>
+    </tr>

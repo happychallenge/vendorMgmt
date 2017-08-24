@@ -59,6 +59,7 @@
                     <thead>
                         <tr>
                             <th>NAME </th>
+                            <th>SIMPLE</th>
                             <th>HomePage</th>
                             <th>LOCATION</th>
                             <th>CITY</th>
@@ -72,6 +73,7 @@
                             <td>
                                 <a href="{% url 'chemical:vendor_detail' vendor.id %}">{{ vendor.en_name | upper}} <br> {{ vendor.cn_name }}  </a> 
                             </td>
+                            <td>{{ vendor.simple_name|upper }}</td>
                             <td>
                             {% if vendor.homepage %}
                                  <a href="{{ vendor.homepage}}" >{{ vendor.homepage}}</a>
@@ -90,10 +92,11 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Name </th>
+                            <th>NAME </th>
+                            <th>SIMPLE</th>
                             <th>HomePage</th>
-                            <th>Status</th>
-                            <th>GP<br>RELATIONSHIP</th>
+                            <th>LOCATION</th>
+                            <th>CITY</th>
                             <th>Tags</th>
                         </tr>
                     </tfoot>

@@ -29,6 +29,8 @@ class POrder(models.Model):
     confirmed = models.BooleanField(default=False)
     fixed = models.BooleanField(default=False)
     contract_date = models.DateField(blank=True, null=True)
+    sales_file = models.FileField(blank=True, null=True)
+    purchase_file = models.FileField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -100,7 +102,6 @@ class POrderItem(models.Model):
 
     def __str__(self):
         return "POrder Item : {}".format(self.id)
-
 
 
 class PayCondition(models.Model):
@@ -200,5 +201,22 @@ class Shipping(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "Shipping {}".format(self.id)
+        return "{} {}".format(self.porder, self.shipping_date)
+
+
+class Material(models.Model):
+    """docstring for Material"""
+    """ 설명 """
+    shipping = models.OneToOneField(Shipping, null=True, blank=True)
+    invoice = models.FileField(blank=True, null=True, upload_to='material/%Y/%m/')
+    packingList = models.FileField(blank=True, null=True, upload_to='material/%Y/%m/')
+    billofLading = models.FileField(blank=True, null=True, upload_to='material/%Y/%m/')
+    coa = models.FileField(blank=True, null=True, upload_to='material/%Y/%m/')
+    fta_co = models.FileField(blank=True, null=True, upload_to='material/%Y/%m/')
+
+    baoguandan = models.FileField(blank=True, null=True, upload_to='material/%Y/%m/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "Material {}".format(self.shipping)
 

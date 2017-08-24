@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.humanize',
     'django.contrib.staticfiles',
 # I appended    
     # 'django.contrib.sites',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'order',
     'allocation',
     'event',
+    'comments',
 ]
 
 MIDDLEWARE = [

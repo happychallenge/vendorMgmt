@@ -1,0 +1,42 @@
+<tr class="gradeX">
+    <td>CHINESE NAME</td>
+    <td>{{ product.cn_name }}</td>
+</tr>
+<tr>
+    <td>ENGLISH NAME</td>
+    <td>{{ product.en_name }}</td>
+</tr>
+<tr>
+    <td>CAS NO.</td>
+    <td>{{ product.cas_no }}</td>
+</tr>
+<tr>
+    <td>Category</td>
+    <td>{{ product.category }}</td>
+</tr>
+<tr>
+    <td>HS CODE</td>
+    <td>China : {{ product.cn_hscode }} ||| Korean : {{ product.ko_hscode }} </td>
+</tr>
+<tr>
+    <td>RATE of TAXREFUND(%)</td>
+    <td>{{ product.rate_taxrefund }}</td>
+</tr>
+<tr>
+    <td> MOLE WEIGHT </td>
+    <td>{{ product.molnumber }}</td>
+</tr>
+<tr>
+    <td>MOLECULAR</td>
+    <td>{{ product.chemequal }}</td>
+</tr>
+<tr>
+    <td>CHEMICAL STRUCTURE</td>
+    <td> 
+        <img src="{% if  product.chemstructure %}{{ product.chemstructure.url }}{% endif %}" alt="{{ product.en_name }}"> 
+    </td>
+</tr>
+<tr>
+    <td>USAGE </td>
+    <td> {{ product.usage }} </td>
+</tr>

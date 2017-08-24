@@ -1,11 +1,11 @@
 {% load static %}
 <nav class="navbar-default navbar-static-side" role="navigation">
-    <div class="sidebar-collapse">
+    <div class="sidebar-collapse jbFixed">
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element center"> 
                     <span>
-                        <img alt="image" class="img-circle" src="{% if evidence.created_user.profile.picture.url %} {{ evidence.created_user.profile.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}">
+                        <img alt="image" class="img-circle" src="{% if user.profile.picture.url %} {{ user.profile.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}">
                     </span>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <span class="clear"> 

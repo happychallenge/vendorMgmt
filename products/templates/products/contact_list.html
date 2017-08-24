@@ -13,12 +13,6 @@
 
 {% block header-index %}
     <h2> CONTACT (担当) </h2>
-    {% if user.is_staff %}
-        <a href="{% url 'chemical:contact_add' %}">
-            <button class='btn btn-primary pull-right'>
-                <span class="glyphicon glyphicon-plus"></span> ADD CONTACT</button>
-        </a> 
-    {% endif %}
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}">Home</a>  

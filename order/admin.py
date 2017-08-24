@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Customer, POrder, POrderItem, PayCondition, Shipping
-from .models import SalesOrder, SalesOrderItem, Packing, Shipping
+from .models import SalesOrder, SalesOrderItem, Packing, Shipping, Material
 # Register your models here.
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
@@ -60,3 +60,11 @@ class ShippingAdmin(admin.ModelAdmin):
     class Meta:
         model = Shipping
     list_display = ['id', 'porder', 'destination', 'shipping_date', 'comments']
+
+
+@admin.register(Material)
+class MaterialAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Material
+    list_display = ['shipping', 'invoice', 'packingList', 'billofLading']
+

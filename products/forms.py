@@ -1,3 +1,4 @@
+from PIL import Image
 from django import forms
 from django.forms import Textarea
 from django.utils.html import mark_safe
@@ -22,12 +23,32 @@ class PictureWidget(forms.widgets.Widget):
 
 
 class ContactForm(forms.ModelForm):
-    # picture = forms.ImageField(widget=PictureWidget)
+    # vendor = forms.IntegerField(widget=forms.HiddenInput())
+    x = forms.FloatField(widget=forms.HiddenInput(), required=False)
+    y = forms.FloatField(widget=forms.HiddenInput(), required=False)
+    width = forms.FloatField(widget=forms.HiddenInput(), required=False)
+    height = forms.FloatField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = Contact
-        fields = [ 'user', 'vendor', 'cn_name', 'en_name', 'role', 'picture', 
-                'email', 'mobile', 'fixed', 'wechat', 'qq']
+        fields = [ 'cn_name', 'en_name', 'role', 'picture', 
+                'email', 'mobile', 'fixed', 'wechat', 'qq', 'x', 'y', 'width', 'height',] # 
+
+    def save(self, commit):
+        contact = super(ContactForm, self).save(commit=commit)
+
+        x = self.cleaned_data.get('x')
+        y = self.cleaned_data.get('y')
+        width = self.cleaned_data.get('width')
+        height = self.cleaned_data.get('height')
+
+        image = Image.open(contact.picture)
+        cropped_image = image.crop((x, y, width+x, height+y))
+        resized_image = cropped_image.resize((300, 300), Image.ANTIALIAS)
+        resized_image.save(contact.picture.path)
+
+        return contact
+
 
 class QuotationProductForm(forms.ModelForm):
 

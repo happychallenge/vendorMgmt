@@ -1,0 +1,26 @@
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID </th>
+            <th>TYPE</th>
+            <th>BUYING PRICE</th>
+            <th>USD PRICE </th>
+            <th>QUOTATION DATE</th>
+            <th>STATUS</th>
+            <th>COMMENT</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for sourcing in vendorProduct.sourcing_set.all %}
+    <tr class='sub{% if sourcing.status == 'I' %} invlid{% endif %}'> 
+        <td> {{forloop.counter }} </td>
+        <td> {{vendorProduct.ptype}}</td>
+        <td style="text-align:right"> {{sourcing.buying_price|floatformat:2}}</td>
+        <td style="text-align:right"> {{sourcing.usd_price|floatformat:2}}</td>
+        <td> {{sourcing.quote_date|date:'Y/m/d'}} </td>
+        <td> {{sourcing.status}} </td>
+        <td> {{sourcing.comment}} </td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,10 @@
+<div>
+    <form action="{% url 'order:file_update' %}" method="POST" enctype="multipart/form-data" class="file_form">
+        {% csrf_token %}
+        <input type="hidden" name='shipping' value="{{shipping}}">
+        <table class="table table-striped table-bordered ">
+        {{ material_form.as_table }}
+        </table>
+        <button type="submit" class="btn btn-primary">SUBMIT</button>
+    </form>
+</div>

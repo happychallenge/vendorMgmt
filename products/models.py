@@ -6,7 +6,6 @@ class Location(models.Model):
     """ 설명 """
     en_name = models.CharField(max_length=20)
     cn_name = models.CharField(max_length=10)
-
     class Meta:
         ordering = ['en_name']
 
@@ -59,6 +58,7 @@ class Vendor(models.Model):
     city = models.CharField(max_length=20, blank=True, null=True)
     tags = models.ManyToManyField('Tag', blank=True)
     comments = models.TextField(blank=True, null=True)
+    product_list = models.FileField(upload_to='product_list/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -66,6 +66,8 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.en_name.upper()
+
+    
 
 
 class Tag(models.Model):
@@ -97,7 +99,6 @@ class Contact(models.Model):
     en_name = models.CharField(max_length=30, blank=True, null=True, verbose_name='ENGLISH NAME')
     role = models.CharField(max_length=2, choices=ROLE, default=SALESMAN)
     picture = models.ImageField(upload_to='contact_profile/', blank=True, null=True)
-
     email = models.EmailField(blank=True, null=True)
     mobile = models.CharField(max_length=30, blank=True, null=True)
     fixed = models.CharField(max_length=30, blank=True, null=True)
@@ -133,7 +134,6 @@ class Product(models.Model):
     cn_hscode = models.CharField(max_length=15, verbose_name='중국 HS CODE', blank=True, null=True)
     ko_hscode = models.CharField(max_length=15, verbose_name='한국 HS CODE', blank=True, null=True)
     etc_hscode = models.CharField(max_length=15, verbose_name='ETC HS CODE', blank=True, null=True)
-
     rate_taxrefund = models.FloatField(max_length=100, verbose_name='RATE of TAX REFUND(%)', blank=True, null=True)
 
     molnumber = models.FloatField(max_length=100, verbose_name='분자량', blank=True, null=True)
@@ -148,6 +148,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.en_name.upper()
+
+    # def get_vendor_list(self):
+    #     return Sourcing.objects.filter(vendorproduct__product=self).annotate()
 
 
 POWDER = 'POWDER'

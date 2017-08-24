@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <form action="" method='POST' class='form'>
+                <form action="" method='POST' class='form' enctype="multipart/form-data">
                     {% csrf_token %}
                     {% bootstrap_form form %}
                     <button type="submit" class="btn btn-primary pull-right">
