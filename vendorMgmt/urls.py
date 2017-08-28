@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^order/', include('order.urls', namespace='order')),
     url(r'^event/', include('event.urls', namespace='event')),
     url(r'^comments/', include('comments.urls', namespace='comments')),
+    url(r'^todos/', include('todos.urls', namespace='todos')),
 
     url(r'^signup/$', signup_views.signup, name='signup'),
     url(r'^login', signup_views.login, name='login'),

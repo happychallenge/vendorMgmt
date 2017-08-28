@@ -25,12 +25,19 @@
                     IN+
                 </div>
             </li>
-            
+
+            <li {% if active == 'Todo' %}class="landing_link"{% endif %}>
+                <a href="{% url 'todos:todo_list' %}"><i class="fa fa-bandcamp"></i> 
+                    <span class="nav-label">To Do List </span>
+                </a> 
+            </li>
+
             <li {% if active == 'Calendar' %}class="landing_link"{% endif %}>
                 <a href="{% url 'event:event_list' %}"><i class="fa fa-diamond"></i> 
                     <span class="nav-label">CALENDAR </span>
                 </a> 
             </li>
+            
             <li {% if active == 'POrder' %}class="landing_link"{% endif %}> 
                 <a href="{% url 'order:porder_list' %}"><i class="fa fa-magic"></i> 
                     <span class="nav-label">PURCHASE ORDER </span>

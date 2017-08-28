@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'allocation',
     'event',
     'comments',
+    'todos',
 ]
 
 MIDDLEWARE = [

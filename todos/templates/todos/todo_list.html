@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load static bootstrap3 %}
+
+{% block title %}
+    TODO CALENDAR
+{% endblock title %}
+
+{% block css %}
+    <link href="{% static 'css/plugins/fullcalendar/fullcalendar.css' %}" rel="stylesheet">
+    <link href="{% static 'js/plugins/jquery-ui/jquery-ui.min.css' %}" rel="stylesheet">
+{% endblock css %}
+
+
+{% block header-index %}
+    <h2> TODO CALENDAR </h2>
+    
+    <button class='btn btn-primary add-todo pull-right' data-url="{% url 'todos:ajax_todo_add' %}">
+        <span class="glyphicon glyphicon-plus"></span> ADD TODOS 
+    </button>
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}">Home</a>  
+        </li>
+        
+        <li class="active">
+            <strong>TODO CALENDAR</strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block mainContent %}
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>TODO CALENDAR </h5>
+                <div class="ibox-tools">
+
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">Config option 1</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ibox-content"> 
+                <!-- CALENDAR -->
+                <div id="calendar"></div>
+            </div> <!-- class="ibox-content" -->
+        </div> <!-- class="ibox float-e-margins" -->
+    </div> <!-- class="col-lg-12" -->
+    
+    <!-- ######################## -->
+    <!-- AJAX TODO INPUT MODAL  -->
+    <!-- ######################## -->
+    <div class="modal inmodal" id="modalTodo" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContent %}
+
+
+
+{% block javascript %}
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+    <script src="{% static 'js/plugins/datapicker/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <script src="{% static 'js/plugins/fullcalendar/moment.min.js' %}"></script>
+    <script src="{% static 'js/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function(){
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay,listWeek'
+                },
+                editable: true,
+                droppable: false, 
+                events: [
+                {% for ev in todo_list %}
+                    {
+                        id: {{ev.id}},
+                        title: '{{ev.name}}',
+                        start: '{{ev.duedate|date:"Y-m-d"}}T{{times|random}}:00:00',
+                        allDay: false,
+                        url : "{% url 'todos:todo_detail' ev.id %}", 
+                    {% if ev.etype == 'URGENT' %}
+                        color: 'red',
+                    {% elif ev.etype == 'NORMAL' %}
+                        color: 'blue',
+                    {% endif %}
+                    },
+                {% endfor %}
+                ]
+            });
+        });
+    </script>
+
+    <script>
+        $(function(){
+            var loadForm = function(){
+                var btn = $(this);
+                $.ajax({
+                    url : btn.attr('data-url'),
+                    type : 'get',
+                    dataType : 'json',
+                    beforeSend: function(){
+                        $('#modalTodo').modal('show');
+                    },
+                    success: function(data) {
+                        $('#modalTodo .modal-content').html(data.html_form)
+                    }
+                });
+            }
+
+            var saveForm = function(){
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    data : form.serialize(),
+                    type : form.attr('method'),
+                    dataType : 'json',
+                    beforeSend: function(){
+                        $('#modalTodo').modal('hide');
+                    },
+                    success : function(data) {
+                        console.log("Success");
+                    },
+                    complete: function(data){
+                        window.location.reload(true);
+                        console.log("Complete");
+                    },
+                });
+                return false;
+            }
+
+            $('.add-todo').click(loadForm);
+            $('#modalTodo').on("submit", ".add-todo-form", saveForm);
+            
+            $(".vendorComment").on("click", ".update-todo", loadForm);
+            $("#modalTodo").on("submit", ".update-todo-form", saveForm);
+        })
+    </script>
+    <script>
+        $(function() {
+            $('#id_duedate').datepicker({
+                buttonImage: "images/calendar.gif", // 버튼 이미지
+                buttonImageOnly : true,             // 버튼 이미지만 표시할지 여부
+                buttonText: "날짜선택",             // 버튼의 대체 텍스트
+                dateFormat: "yy-mm-dd",             // 날짜의 형식
+                changeMonth: true,                  // 월을 이동하기 위한 선택상자 표시여부
+                //minDate: 0,                       // 선택할수있는 최소날짜, ( 0 : 오늘 이전 날짜 선택 불가)
+            });
+        });
+    </script>
+{% endblock javascript %}
+
+</body>
+
+</html>

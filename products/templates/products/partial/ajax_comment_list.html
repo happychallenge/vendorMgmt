@@ -11,12 +11,12 @@
         {% for comment in comment_list %}
             <tr>
                 <td >
-                    {{ comment.created_at|naturaltime }} 
+                    {{ comment.created_at|date:"%Y/%m/%d" }} 
                 </td>
                 <td>{{ comment.content|linebreaks }}</td>
                 <td>
                     <button class='btn btn-primary update-comment' data-url="{% url 'comments:ajax_comment_update' comment.id %}">
-                        <span class="glyphicon glyphicon-plus"></span> UPDATE COMMENT
+                        <span class="glyphicon glyphicon-plus"></span> UPDATE 
                     </button>
                 </td>
             </tr>
