@@ -7,10 +7,10 @@ from django.contrib import messages
 
 from .models import Vendor, Product, Contact, VendorProduct, Sourcing
 from .forms import VendorForm, ProductForm, ContactForm
-from .forms import SourcingPriceForm, SourcingProductForm, SourcingSimpleForm
+from .forms import SourcingPriceForm, SourcingProductForm, SourcingSimpleForm, SourcingVendorForm
 # Create your views here.
 
-EXCHANGE_RATE = 6.66
+EXCHANGE_RATE = 6.53
 
 ###############################################
 ########### VENDOR 
@@ -20,7 +20,7 @@ def vendor_list(request):
     vendor_list = Vendor.objects.prefetch_related('tags').filter(gprelation='CURRENT')
     context = {
         'vendor_list': vendor_list,
-        'active' : 'Vendor',
+        'active' : 'Sourcing',
     }
     return render(request, 'products/vendor_list.html', context)
 
@@ -33,7 +33,7 @@ def vendor_detail(request, id):
     context = {
         'vendor': vendor, 
         'vendorproducts': vendorproducts,
-        'active' : 'Vendor',
+        'active' : 'Sourcing',
     }
     return render(request, 'products/vendor_detail.html', context)
 
@@ -50,7 +50,7 @@ def vendor_add(request, template_name='products/vendor_add.html'):
         form = VendorForm()
         context = {
             'form':form,
-            'active' : 'Vendor',
+            'active' : 'Sourcing',
         }
     return render(request, template_name, context)
 
@@ -59,16 +59,16 @@ def vendor_add(request, template_name='products/vendor_add.html'):
 def vendor_update(request, id, template_name='products/vendor_add.html'):
     vendor = get_object_or_404(Vendor, id=id)
     if request.method == 'POST':
-        form = VendorForm(request.POST, instance=vendor)
+        form = VendorForm(request.POST, request.FILES, instance=vendor)
         if form.is_valid():
             vendor = form.save()
             messages.success(request, 'Vendor was successfully updated!!!')
-            return redirect('chemical:sourcingvendor_list')
+            return redirect('chemical:sourcingvendor_detail', vendor.id)
     else:
         form = VendorForm(instance=vendor)
         context = {
             'form':form,
-            'active' : 'Vendor',
+            'active' : 'Sourcing',
         }
     return render(request, template_name, context )
 
@@ -108,21 +108,25 @@ def sourcing_productadd(request, template_name='products/sourcing_productadd.htm
         
         if form.is_valid():
             vendor_id = form.cleaned_data.get('vendor')
-            product_id = form.cleaned_data.get('product')
+            product = form.cleaned_data.get('product')
             ptype = form.cleaned_data.get('ptype')
 
             buying_price = form.cleaned_data.get('buying_price')
+            seller_usd_price = form.cleaned_data.get('seller_usd_price')
 
-            if product_id and vendor_id:
+            if product and vendor_id:
                 vendor = get_object_or_404(Vendor, id=vendor_id)
-                product = get_object_or_404(Product, en_name=product_id)
-                vendorproduct, created = VendorProduct.objects.get_or_create(vendor=vendor, product=product, ptype=ptype)
+                vendorproduct, created = VendorProduct.objects.get_or_create(
+                    vendor=vendor, product=product, ptype=ptype)
 
                 sourcing = form.save(commit=False)
                 sourcing.vendorproduct = vendorproduct
                 rate_taxrefund = int(product.rate_taxrefund)/100
-                sourcing.usd_price = (buying_price - 
+
+                if buying_price:
+                    sourcing.usd_price = (buying_price - 
                                     (buying_price/1.17*rate_taxrefund))/EXCHANGE_RATE
+                sourcing.seller_usd_price = seller_usd_price
                 sourcing.save()
                 return redirect('chemical:sourcingvendor_detail', vendor_id)
     else:
@@ -139,6 +143,43 @@ def sourcing_productadd(request, template_name='products/sourcing_productadd.htm
     return render(request, template_name, context)
 
 
+@staff_member_required
+def sourcing_vendoradd(request, product_id, template_name='products/sourcing_vendoradd.html'):
+    if request.method == 'POST':
+        form = SourcingVendorForm(request.POST)
+        
+        if form.is_valid():
+            vendor = form.cleaned_data.get('vendor')
+            ptype = form.cleaned_data.get('ptype')
+
+            buying_price = form.cleaned_data.get('buying_price')
+            seller_usd_price = form.cleaned_data.get('seller_usd_price')
+
+            if vendor and product_id:
+                product = get_object_or_404(Product, id=product_id)
+                vendorproduct, created = VendorProduct.objects.get_or_create(vendor=vendor, product=product, ptype=ptype)
+
+                sourcing = form.save(commit=False)
+                sourcing.vendorproduct = vendorproduct
+                rate_taxrefund = int(product.rate_taxrefund)/100
+                if buying_price:
+                    sourcing.usd_price = (buying_price - 
+                                    (buying_price/1.17*rate_taxrefund))/EXCHANGE_RATE
+                sourcing.seller_usd_price = seller_usd_price
+                sourcing.save()
+                return redirect('chemical:sourcingproduct_detail', product_id)
+    else:
+        product = get_object_or_404(Product, id=product_id)
+        form = SourcingVendorForm(initial={
+                    'product_name':product.en_name
+                })
+        context = {
+            'form': form, 
+            'active' : 'Sourcing',
+            'product': product
+        }
+    return render(request, template_name, context)
+
 # 신규 Sourcing Price 만  추가할 때.
 @staff_member_required
 def sourcing_priceadd(request, template_name='products/sourcing_priceadd.html'):
@@ -151,6 +192,8 @@ def sourcing_priceadd(request, template_name='products/sourcing_priceadd.html'):
         if form.is_valid():
 
             buying_price = form.cleaned_data.get('buying_price')
+            seller_usd_price = form.cleaned_data.get('seller_usd_price')
+
             vendorproduct = VendorProduct.objects.select_related("vendor").filter(
                     vendor=vendor_id, product=product_id, ptype=ptype
                 )[0]
@@ -158,8 +201,11 @@ def sourcing_priceadd(request, template_name='products/sourcing_priceadd.html'):
             sourcing = form.save(commit=False)
             sourcing.vendorproduct = vendorproduct
             rate_taxrefund = int(vendorproduct.product.rate_taxrefund)/100
-            sourcing.usd_price = (buying_price - 
+
+            if buying_price:
+                sourcing.usd_price = (buying_price - 
                                 (buying_price/1.17*rate_taxrefund))/EXCHANGE_RATE
+            sourcing.seller_usd_price = seller_usd_price
             sourcing.save()
             return redirect('chemical:sourcingvendor_detail', vendorproduct.vendor_id)
     else:
@@ -190,26 +236,62 @@ def sourcing_simpleadd(request):
             sourcing = form.cleaned_data.get('sourcing')
             vendor_id = form.cleaned_data.get('vendor')
             newprice = form.cleaned_data.get('newprice')
+            seller_usd_price = form.cleaned_data.get('seller_usd_price')
 
-            if sourcing and newprice:
+            if sourcing and newprice and seller_usd_price:
                 old = get_object_or_404(Sourcing, id=sourcing)
                 old.status = 'I'        # 기존 견적을 Invlid 
                 old.save()
 
                 rate_taxrefund = int(old.vendorproduct.product.rate_taxrefund)/100
                 usd_price = (newprice - 
-                                    (newprice/1.17*rate_taxrefund))/EXCHANGE_RATE
+                                (newprice/1.17*rate_taxrefund))/EXCHANGE_RATE
 
                 sourcing = Sourcing.objects.create(
                     vendorproduct=old.vendorproduct, 
                     buying_price=newprice,
                     usd_price=usd_price,
+                    seller_usd_price=seller_usd_price,
                     effective_date=old.effective_date,
                     payterm=old.payterm,
                     status='V',
                     comments=old.comments,
                 )
-    
+            elif sourcing and newprice:
+                old = get_object_or_404(Sourcing, id=sourcing)
+                old.status = 'I'        # 기존 견적을 Invlid 
+                old.save()
+
+                rate_taxrefund = int(old.vendorproduct.product.rate_taxrefund)/100
+                usd_price = (newprice - 
+                                (newprice/1.17*rate_taxrefund))/EXCHANGE_RATE
+
+                sourcing = Sourcing.objects.create(
+                    vendorproduct=old.vendorproduct, 
+                    buying_price=newprice,
+                    usd_price=usd_price,
+                    seller_usd_price=old.seller_usd_price,
+                    effective_date=old.effective_date,
+                    payterm=old.payterm,
+                    status='V',
+                    comments=old.comments,
+                )
+            elif sourcing and seller_usd_price:
+                old = get_object_or_404(Sourcing, id=sourcing)
+                old.status = 'I'        # 기존 견적을 Invlid 
+                old.save()
+
+                sourcing = Sourcing.objects.create(
+                    vendorproduct=old.vendorproduct, 
+                    buying_price=old.buying_price,
+                    usd_price=old.usd_price,
+                    seller_usd_price=seller_usd_price,
+                    effective_date=old.effective_date,
+                    payterm=old.payterm,
+                    status='V',
+                    comments=old.comments,
+                )
+
     return redirect('chemical:sourcingvendor_detail', vendor_id)
 
 
@@ -272,7 +354,7 @@ def product_add(request, template_name='products/product_add.html'):
         if form.is_valid():
             product = form.save()
             messages.success(request, 'product was successfully added!!!')
-            return redirect('chemical:sourcingproduct_list')
+            return redirect('chemical:sourcingproduct_detail', product.id)
     else:
         form = ProductForm()
         context = {
@@ -289,7 +371,7 @@ def product_update(request, id, template_name='products/product_add.html'):
         if form.is_valid():
             product = form.save()
             messages.success(request, 'product was successfully updated!!!')
-            return redirect('chemical:sourcingproduct_list')
+            return redirect('chemical:sourcingproduct_detail', product.id)
     else:
         form = ProductForm(instance=product)
         context = {

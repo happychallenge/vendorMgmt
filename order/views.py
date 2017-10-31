@@ -5,7 +5,9 @@ from django.template.loader import render_to_string
 
 from products.models import Product, Quotation
 from event.models import Event
-from .models import POrder, Shipping
+
+from decorators import ajax_required
+from .models import POrder, Shipping, Material
 from .forms import POrderForm, POrderItemForm, POrderItemFormSet, PayConditionForm
 from .forms import PayConditionFormSet, ShippingForm, ShippingFormSet, MaterialForm
 
@@ -129,30 +131,26 @@ def shipping_add(request, id):
             })
 
 
-# @ajax_required
-# @login_required
-def material_file(request):
-    try:
-        if request.method == 'POST':
-            shipping_id = request.POST.get('shipping')
-            shipping = Shipping.objects.get(pk=shipping_id)
-            material_form = MaterialForm(request.POST)
+@ajax_required
+@login_required
+def ajax_material_file(request, id):
+    if request.method == 'POST':
+        shipping = Shipping.objects.get(id=id)
+        form = MaterialForm(request.POST, request.FILES)
 
-            if material_form.is_valid():
-                material = material_form.save(commit=False)
-                material.shipping = shipping
-                material.save()
+        if form.is_valid():
+            material = form.save(commit=False)
+            material.shipping = shipping
+            material.save()
 
-            html = render_to_string('order/ajax/material_detail.html',
-                        {'material': material})
-            return HttpResponse(html)
+            material = Material.objects.get(shipping=shipping)
+            html = render_to_string('order/partial/material.html',
+                    {'material': material})
+        return HttpResponse(html)
 
-        else:
-            shipping_id = request.GET.get('shipping')
-            material_form = MaterialForm()
-            html = render_to_string('order/ajax/material_add.html',
-                        {'material_form': material_form, 'shipping':shipping_id})
-            return HttpResponse(html)
+    else:
+        form = MaterialForm()
+        html = render_to_string('order/partial/material_add.html',
+                    {'form': form, 'shipping':id }, request=request)
+        return HttpResponse(html)
 
-    except Exception:
-        return HttpResponseBadRequest()

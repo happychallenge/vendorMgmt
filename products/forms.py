@@ -10,11 +10,17 @@ class VendorForm(forms.ModelForm):
     class Meta:
         model = Vendor
         fields = '__all__'
-
+        widgets = {
+            'comments': Textarea(attrs={'rows': 2}),
+        }
+        
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
+        widgets = {
+            'usage': Textarea(attrs={'rows':2}),
+        }
 
 class PictureWidget(forms.widgets.Widget):
     def render(self, name, value, attrs=None):
@@ -42,10 +48,11 @@ class ContactForm(forms.ModelForm):
         width = self.cleaned_data.get('width')
         height = self.cleaned_data.get('height')
 
-        image = Image.open(contact.picture)
-        cropped_image = image.crop((x, y, width+x, height+y))
-        resized_image = cropped_image.resize((300, 300), Image.ANTIALIAS)
-        resized_image.save(contact.picture.path)
+        if not contact.picture:
+            image = Image.open(contact.picture)
+            cropped_image = image.crop((x, y, width+x, height+y))
+            resized_image = cropped_image.resize((300, 300), Image.ANTIALIAS)
+            resized_image.save(contact.picture.path)
 
         return contact
 
@@ -124,11 +131,38 @@ class SourcingProductForm(forms.ModelForm):
 
     class Meta:
         model = Sourcing
-        fields = ['vendor', 'vendor_name', 'product', 'ptype',  'buying_price', 
+        fields = ['vendor', 'vendor_name', 'product', 'ptype',  'buying_price', 'seller_usd_price',
                 'payterm', 'effective_date', 'status', 'comments']
         widgets = {
             'comments': Textarea(attrs={'rows': 3}),
         }
+
+# For views.sourcing_productadd
+class SourcingVendorForm(forms.ModelForm):
+
+    POWDER = 'POWDER'
+    GRANULAR = 'GRANULAR'
+    LIQUID = 'LIQUID'
+    PRODUCTTYPE = (
+        (POWDER, 'POWDER'),
+        (GRANULAR, 'GRANULAR'),
+        (LIQUID, 'LIQUID'),
+    )
+
+    product_name = forms.CharField()
+
+# 제품을 선택하도록 함 
+    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all())
+    ptype = forms.ChoiceField(widget=forms.RadioSelect, choices=PRODUCTTYPE)
+
+    class Meta:
+        model = Sourcing
+        fields = ['product_name', 'vendor', 'ptype',  'buying_price', 'seller_usd_price',
+                'payterm', 'effective_date', 'status', 'comments']
+        widgets = {
+            'comments': Textarea(attrs={'rows': 3}),
+        }
+
 
 class SourcingPriceForm(forms.ModelForm):
 
@@ -150,5 +184,6 @@ class SourcingPriceForm(forms.ModelForm):
 class SourcingSimpleForm(forms.Form):
     vendor = forms.IntegerField(widget=forms.HiddenInput())
     sourcing = forms.IntegerField(widget=forms.HiddenInput())
-    newprice = forms.FloatField()
+    newprice = forms.FloatField(required=False)
+    seller_usd_price = forms.FloatField(required=False)
 

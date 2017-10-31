@@ -5,27 +5,33 @@
             <th>TYPE </th>
             <th>BUYING <br> PRICE</th>
             <th>USD <br> PRICE</th>
+            <th>SELLER <br> USD PRICE</th>
             <th>PAY TERM</th>
             <th> NEW <br> QUOTATION</th>
             <th> ACTION </th>
         </tr>
     </thead>
     <tbody>
-{% for vdproduct in vendorproducts %}
-    {% for sourcing in vdproduct.sourcing_set.all %}
+{% for vendorProduct in vendorproducts %}
+    {% for sourcing in vendorProduct.sourcing_set.all %}
         {% if sourcing.status == 'V' %}
         <tr>
-            <td> {{vdproduct.product}} </td>
-            <td> {{vdproduct.ptype }} </td>
+            <td> 
+                <a href="{% url 'chemical:sourcingproduct_detail' vendorProduct.product.id %}">{{vendorProduct.product.en_name|upper}}
+                </a> 
+            </td>
+            <td> {{vendorProduct.ptype }} </td>
             <td style="text-align:right"> {{sourcing.buying_price|floatformat:2}}</td>
             <td style="text-align:right"> {{sourcing.usd_price|floatformat:2}}</td>
+            <td style="text-align:right"> {{sourcing.seller_usd_price|floatformat:2}}</td>
             <td> {{sourcing.payterm}}</td>
             <td> 
             <form action="{% url 'chemical:sourcing_simpleadd' %}" method="POST"> {#  #}
                 {% csrf_token %}
                 <input type="hidden" name="sourcing" value="{{sourcing.id}}" />   
                 <input type="hidden" name="vendor" value="{{vendor.id}}" />   
-                <input type="number" name="newprice" step="any" class="form-control" placeholder="New Price" title="" required id="id_newprice" /> 
+                <input type="number" name="newprice" step="any" class="form-control" placeholder="New Price" title="" id="id_newprice" /> 
+                <input type="number" name="seller_usd_price" step="any" class="form-control" placeholder="Seller USD$" title="" id="id_seller_usd_price" /> 
                 <button type="submit" class="btn btn-primary">SIMPLE</button> 
             </form>
             </td>

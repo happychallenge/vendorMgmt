@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static humanize %}
 
 
 {% block title %}
@@ -60,14 +60,14 @@
                         <tr>
                             <th>NAME </th>
                             <th>SIMPLE </th>
-                            <th>HomePage</th>
-                            <th>Status</th>
-                            <th>GP<br>RELATIONSHIP</th>
+                            <th>COMPANY TYPE</th>
+                            <th>CAPITAL</th>
+                            <th>YEAR</th>
+                            <th>GP</th>
                             <th>Tags</th>
                         </tr>
                     </thead>
                     <tbody>
-
                     {% for vendor in vendor_list %}
                         <tr class="gradeX">
                             <td>
@@ -78,12 +78,9 @@
                             <td>
                                 <a href="{% url 'chemical:sourcingvendor_detail' vendor.id %}">{{ vendor.en_name | upper}} <br> {{ vendor.cn_name }}  </a> 
                             </td>
-                            <td>
-                            {% if vendor.homepage %}
-                                 <a href="{{ vendor.homepage}}" target='chem'>{{ vendor.homepage}}</a>
-                            {% endif %} 
-                            </td>
-                            <td>{{ vendor.status }}</td>
+                            <td>{{ vendor.companytype }}</td>
+                            <td style="text-align:right">{{ vendor.capital|intcomma }}</td>
+                            <td>{{ vendor.birthyear }}</td>
                             <td>{{ vendor.gprelation }}</td>
                             <td class="center"> 
                                 {{ vendor.tags.all|join:", " }}, 
@@ -95,10 +92,11 @@
                     <tfoot>
                         <tr>
                             <th>Name </th>
-                            <th>Name </th>
-                            <th>HomePage</th>
-                            <th>Status</th>
-                            <th>GP<br>RELATIONSHIP</th>
+                            <th>SIMPLE </th>
+                            <th>COMPANY TYPE</th>
+                            <th>CAPITAL</th>
+                            <th>YEAR</th>
+                            <th>GP</th>
                             <th>Tags</th>
                         </tr>
                     </tfoot>
@@ -123,7 +121,7 @@
     <script>
         $(document).ready(function(){
             $('.vendor-list').DataTable({
-                pageLength: 50,
+                pageLength: 100,
                 responsive: true,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [

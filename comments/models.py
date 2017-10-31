@@ -6,7 +6,7 @@ class Comment(models.Model):
     """ 설명 """
     vendor = models.ForeignKey(Vendor)
     content = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "{} {}".format(self.vendor, self.id)

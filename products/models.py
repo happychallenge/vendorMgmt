@@ -26,9 +26,9 @@ class Vendor(models.Model):
         (BANKRUPT, 'BANKRUPT'),
     )
 
-    TRADING = 'T'
-    MANUFACTURER = 'M'
-    MIXING = 'X'
+    TRADING = 'TRADING'
+    MANUFACTURER = 'MANUFACTURER'
+    MIXING = 'MIXING'
     COMPANYTYPE = (
         (TRADING, 'TRADING'),
         (MANUFACTURER, 'MANUFACTURER'),
@@ -51,6 +51,9 @@ class Vendor(models.Model):
     en_address = models.CharField(max_length=200, blank=True, null=True, verbose_name='ENGLISH ADDRESS')
     homepage = models.URLField(blank=True, null=True)
     tel = models.CharField(max_length=30, blank=True, null=True)
+    birthyear = models.IntegerField(blank=True, null=True)
+    capital = models.IntegerField(blank=True, null=True)
+    sales_amount = models.IntegerField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS, default=ACTIVE)
     gprelation = models.CharField(max_length=20, choices=GPRELATION, default=CURRENT, verbose_name='GP RELATION')
     companytype = models.CharField(max_length=20, choices=COMPANYTYPE, default=MANUFACTURER)
@@ -197,6 +200,7 @@ class VendorProduct(models.Model):
     vendor = models.ForeignKey(Vendor)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     ptype = models.CharField(max_length=10, choices=TYPE, default=POWDER)
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -281,9 +285,9 @@ class Sourcing(models.Model):
     )
 
     vendorproduct = models.ForeignKey(VendorProduct)
-    buying_price = models.FloatField()
+    buying_price = models.FloatField(blank=True, null=True)
     usd_price = models.FloatField(blank=True, null=True)
-    sales_price = models.FloatField(blank=True, null=True)
+    seller_usd_price = models.FloatField('SELLER EXPORT PRICE', blank=True, null=True)
     payterm = models.CharField(max_length=20, choices=PAYTERM, default=CASH)
     quote_date = models.DateTimeField(auto_now_add=True)
     effective_date = models.DateField(blank=True, null=True)

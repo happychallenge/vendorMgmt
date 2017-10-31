@@ -10,10 +10,8 @@ class PayConditionForm(forms.ModelForm):
         fields = '__all__'
 
 class POrderForm(forms.ModelForm):
-    vendor = forms.ModelChoiceField(queryset=Vendor.objects.filter(
-            gprelation='CURRENT'))
-    contact = forms.ModelChoiceField(queryset=Contact.objects.filter(
-            vendor__gprelation='CURRENT'))
+    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all())
+    contact = forms.ModelChoiceField(queryset=Contact.objects.all())
     class Meta:
         model = POrder
         fields = ['offer_no', 'name', 'vendor', 'contact', 'total_amount', 

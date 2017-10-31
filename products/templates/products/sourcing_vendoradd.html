@@ -2,18 +2,18 @@
 {% load static bootstrap3 %}
 
 {% block title %}
-    ADD PRODUCT AND QUOTATION 
+    ADD VENDOR AND QUOTATION 
 {% endblock title %}
 
 
 {% block header-index %}
-    <h2> ADD PRODUCT AND QUOTATION </h2>
+    <h2> ADD VENDOR AND QUOTATION </h2>
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}">Home</a>  
         </li>
         <li>
-            <a href="{% url 'chemical:contact_list' %}">ADD PRODUCT AND QUOTATION</a>
+            <a href="{% url 'chemical:contact_list' %}">ADD VENDOR AND QUOTATION</a>
         </li>
         <li class="active">
             <strong>ADD</strong>
@@ -26,7 +26,7 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>ADD PRODUCT AND QUOTATION </h5>
+                <h5>ADD VENDOR AND QUOTATION </h5>
                 <div class="ibox-tools">
 
                     <a class="collapse-link">
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <form method="post" action="{% url 'chemical:sourcing_productadd' %}" class="quotation-form">
+                <form method="post" action="{% url 'chemical:sourcing_vendoradd' product.id %}" class="quotation-form">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>

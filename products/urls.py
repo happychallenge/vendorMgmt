@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^sourcing/(?P<id>\d+)/$', views.sourcingvendor_detail, name='sourcingvendor_detail'),
     url(r'^sourcing/priceadd/$', views.sourcing_priceadd, name='sourcing_priceadd'),
     url(r'^sourcing/productadd/$', views.sourcing_productadd, name='sourcing_productadd'),
+    url(r'^sourcing/vendoradd/(?P<product_id>\d+)/$', views.sourcing_vendoradd, name='sourcing_vendoradd'),
     url(r'^sourcing/simpleadd/$', views.sourcing_simpleadd, name='sourcing_simpleadd'),
     # url(r'^sourcing/update/(?P<id>\d+)/$', views.vendor_update, name='vendor_update'),
 

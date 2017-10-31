@@ -10,7 +10,7 @@ from .forms import QuotationProductForm, QuotationSimpleForm, QuotationUpdateFor
 ###############################################
 ###########    QUOTATION 
 ###############################################
-
+@login_required
 def save_quotation(request, vendor_id, form, template_name):
     data = dict()
     

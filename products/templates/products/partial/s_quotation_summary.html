@@ -5,6 +5,7 @@
              <th>TYPE</th>
              <th>BUYING PRICE</th>
              <th>USD PRICE</th>
+             <th>SELLER EXPORT</th>
              <th>QUOTATION DATE</th>
              <th>EFFIVE DATE</th>
              <th>STATUS</th>
@@ -21,6 +22,7 @@
             <td> {{vendorproduct.ptype }} </td>
             <td style="text-align:right"> {{sourcing.buying_price|floatformat:2}}</td>
             <td style="text-align:right"> {{sourcing.usd_price|floatformat:2}}</td>
+            <td style="text-align:right"> {{sourcing.seller_usd_price|floatformat:2}}</td>
             <td> {{sourcing.payterm}}</td>
             <td> {{sourcing.quote_date|date:'Y/m/d'}} </td>
             <td> {{sourcing.status}} </td>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static humanize %}
 
 
 {% block title %}
@@ -60,7 +60,7 @@
                         <tr>
                             <th>NAME </th>
                             <th>SIMPLE</th>
-                            <th>HomePage</th>
+                            <th>COMPANY TYPE</th>
                             <th>LOCATION</th>
                             <th>CITY</th>
                             <th>Tags</th>
@@ -74,17 +74,11 @@
                                 <a href="{% url 'chemical:vendor_detail' vendor.id %}">{{ vendor.en_name | upper}} <br> {{ vendor.cn_name }}  </a> 
                             </td>
                             <td>{{ vendor.simple_name|upper }}</td>
-                            <td>
-                            {% if vendor.homepage %}
-                                 <a href="{{ vendor.homepage}}" >{{ vendor.homepage}}</a>
-                            {% endif %} 
-                            </td>
+                            <td>{{ vendor.companytype }}</td>
                             <td>{{ vendor.location }}</td>
                             <td>{{ vendor.city }}</td>
                             <td class="center"> 
-                        {% for tag in vendor.tags.all %}
-                            {{ tag }}, 
-                        {% endfor %}
+                                {{ vendor.tags.all|join:", " }}, 
                             </td>
                         </tr>
                     {% endfor %}
@@ -94,7 +88,7 @@
                         <tr>
                             <th>NAME </th>
                             <th>SIMPLE</th>
-                            <th>HomePage</th>
+                            <th>COMPANY TYPE</th>
                             <th>LOCATION</th>
                             <th>CITY</th>
                             <th>Tags</th>

@@ -11,7 +11,7 @@
         {% for comment in comment_list %}
             <tr>
                 <td >
-                    {{ comment.created_at|date:"%Y/%m/%d" }} 
+                    {{ comment.created_at|date:"Y/m/d" }} 
                 </td>
                 <td>{{ comment.content|linebreaks }}</td>
                 <td>

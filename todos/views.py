@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 
 from decorators import ajax_required
 
@@ -10,19 +11,21 @@ from .models import Todo
 from .forms import TodoForm
 
 # Create your views here.
+@login_required
 def todo_list(request):
     today = date.today()
-    from_dt = today + timedelta(days=-7)
+    from_dt = today + timedelta(days=-60)
     to_dt = today + timedelta(days=90)
 
     todo_list = Todo.objects.filter(duedate__range=[from_dt, to_dt]).order_by('duedate')
-    times = [ time for time in range(8, 20)]
+    times = [ time for time in range(10, 20)]
 
     return render(request, 'todos/todo_list.html', {
             'todo_list': todo_list,
             'times': times,
         })
 
+@login_required
 def todo_detail(request, id):
 
     todo = Todo.objects.get(id=id)

@@ -17,7 +17,7 @@ class VendorAdmin(admin.ModelAdmin):
     class Meta:
         model = Vendor
     list_display = ['id', 'cn_name', 'en_name', 'simple_name', 'companytype', 'status']
-    list_editable = ['en_name','simple_name']
+    list_editable = ['en_name','simple_name', 'companytype']
     search_fields = ['en_name', 'cn_name']
 
 
@@ -114,7 +114,7 @@ update_usd_price.short_description = 'GET USD PRICE'
 class SourcingAdmin(admin.ModelAdmin):
     class Meta:
         model = Sourcing
-    list_display = ['vendorproduct', 'buying_price', 'usd_price', 'sales_price',
+    list_display = ['id', 'vendorproduct', 'buying_price', 'usd_price', 'seller_usd_price',
                 'quote_date', 'effective_date', 'status']
     actions = [ update_quote_invalid, update_usd_price ]
     search_fields = [ 'vendorproduct__vendor__en_name', 'vendorproduct__product__en_name']

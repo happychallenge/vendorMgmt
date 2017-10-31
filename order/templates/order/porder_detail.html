@@ -6,8 +6,8 @@
 {% endblock title %}
 
 {% block css %}
-    <link href="{% static 'css/iCheck/custom.css' %}" rel="stylesheet">
-    <link href="{% static 'css/dataTables/datatables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/plugins/iCheck/custom.css' %}" rel="stylesheet">
+    <link href="{% static 'css/plugins/dataTables/datatables.min.css' %}" rel="stylesheet">
 {% endblock css %}
 
 
@@ -57,50 +57,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="gradeX">
-                            <td>OFFER #</td>
-                            <td>{{ porder.offer_no }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>NAME</td>
-                            <td>{{ porder.name }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>VENDOR</td>
-                            <td>{{ porder.vendor }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>CONTACT</td>
-                            <td>{{ porder.contact }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>TOTAL AMOUNT</td>
-                            <td>{{ porder.total_amount }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>PRICE TERM</td>
-                            <td>{{ porder.paycondition.price_term }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>PAY PERIOD</td>
-                            <td>{{ porder.paycondition.pay_term }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>CONFIRMED</td>
-                            <td>{{ porder.confirmed }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>FIXED</td>
-                            <td>{{ porder.fixed }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>PAID</td>
-                            <td>{{ porder.paid }}</td>
-                        </tr>
-                        <tr class="gradeX">
-                            <td>CONTRACT FILE</td>
-                            <td>{{ porder.sales_file }}</td>
-                        </tr>
+                        {% include 'order/partial/order_detail.html' %}
+
                     {% if user.is_superuser %}
                         <tr class="gradeX">
                             <td>PURCHASE FILE</td>
@@ -111,134 +69,14 @@
                         <tr class="gradeX">
                             <td colspan="2">
                                 <h3>ORDER ITEM</h3>
-                                <table class="table table-striped table-bordered ">
-                                    <thead>
-                                        <tr>
-                                            <th>PRODUCT</th>
-                                            <th>P TYPE</th>
-                                            <th>AMOUNT</th>
-                                            <th>UNIT PRICE</th>
-                                            <th>PURCHASE PRICE</th>
-                                            <th>PACKING</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                {% for porderitem in porder.porderitem_set.all %}
-                                    <tr>
-                                        <td> {{porderitem.product}} </td>
-                                        <td> {{porderitem.ptype}} </td>
-                                        <td style='text-align:right'> {{porderitem.amount|floatformat:2}} </td>
-                                        <td style='text-align:right'> $ {{porderitem.unit_price|floatformat:2}} </td>
-                                        <td style='text-align:right'> $ {{porderitem.purchase_price|floatformat:2}} </td>
-                                        <td> 
-                                            {{porderitem.packing.unit_weight}} Kg
-                                            {{porderitem.packing.packing_type}}
-                                            {{porderitem.packing.pallet_weight}} Kg per Pallet
-                                        </td>
-                                    </tr>                            
-                                {% endfor %}
-                                    </tbody>
-                                </table>
+                                {% include 'order/partial/order_item.html' %}
                             </td>
                         </tr>
 
                         <tr class="gradeX">
                             <td colspan="2">
                                 <h3>SHIPPING ITEM</h3>
-                                <table class="table table-striped table-bordered ">
-                                    <thead>
-                                        <tr>
-                                            <th>DESTINATION</th>
-                                            <th>SHIPPING DATE</th>
-                                            <th>COMMENT</th>
-                                            <th>ACTION</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                            {% for shipping in porder.shipping_set.all %}
-                                    <tr>
-                                        <td> {{shipping.destination}} </td>
-                                        <td> {{shipping.shipping_date}} </td>
-                                        <td width='40%'> {{shipping.comments|linebreaks}} </td>
-                                        <td> 
-                                            <button class="btn btn-primary createMaterial" data-url="{% url 'order:material_file' %}?shipping={{shipping.id}}">APPEND FILE</button> 
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan='4' id='htmlMaterial'>
-                                        </td>
-                                    </tr>
-                                {% if shipping.material %}
-                                    <tr>
-                                        <td colspan='4'>
-                                            <table class="table table-striped table-bordered ">
-                                                <thead>
-                                                    <tr>
-                                                        <td>NAME</td>
-                                                        <td>FILE</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>INVOICE</td>
-                                                        <td>
-                                                            <a href="{{ shipping.material.invoice.url }}">
-                                                            {{ shipping.material.invoice }}
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>PACKING LIST</td>
-                                                        <td>
-                                                            <a href="{{ shipping.material.packingList.url }}">
-                                                            {{ shipping.material.packingList }}
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Bill of Lading</td>
-                                                        <td>
-                                                            <a href="{{ shipping.material.billofLading.url }}">
-                                                            {{ shipping.material.billofLading }}
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Certificate of Ananlysis</td>
-                                                        <td>
-                                                            <a href="{{ shipping.material.coa.url }}">
-                                                            {{ shipping.material.coa }}
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>FTA CO</td>
-                                                        <td>
-                                                        {% if shipping.material.fta_co %}
-                                                            <a href="{{ shipping.material.fta_co.url }}">
-                                                            {{ shipping.material.fta_co }}
-                                                            </a>
-                                                        {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% if user.is_superuser %}
-                                                    <tr>
-                                                        <td>BAO GUAN DAN</td>
-                                                        <td>
-                                                            <a href="{{ shipping.material.baoguandan.url }}">
-                                                            {{ shipping.material.baoguandan }}
-                                                            </a>
-                                                    </td>
-                                                    </tr>
-                                                {% endif %}
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>                                              
-                                {% endif %}                    
-                            {% endfor %}
-                                    </tbody>
-                                </table>
+                                {% include 'order/partial/shipping_detail.html' %}
                             </td>
                         </tr>
                     {% if porder.paid == False %}
@@ -260,53 +98,72 @@
         </div> <!-- class="ibox float-e-margins" -->
     </div> <!-- class="col-lg-12" -->
     
-    <div class="modal fade" id="modalMaterial">
+    <!-- ######################## -->
+    <!-- AJAX TODO INPUT MODAL  -->
+    <!-- ######################## -->
+    <div class="modal inmodal" id="modalMaterial" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modalContent">
+            <div class="modal-content animated bounceInRight">
                 
             </div>
         </div>
-    </div>    
+    </div>
+
 {% endblock mainContent %}
 
 
 
 {% block javascript %}
-<script>
-$(function(){
-    var loadForm = function(){
-        var btn = $(this);
-        $.ajax({
-            url: btn.attr('data-url'),
-            type: 'GET',
-            dataType: 'html',
-            beforeSend: function(){
-                $('#modalMaterial').modal('show');
-            },
-            success: function(data){
-                $('#addMaterial .modalContent').html(html);
-            }
-        });
-    };
 
-    var saveForm = function(){
-        var form = $(this);
-        $.ajax({
-            url: form.attr('action'),
-            data: from.serialize(),
-            type: 'html',
-            success: function(data){
-                $('#htmlMaterial').html(html);
-                $('#modalMaterial').modal('hide');
-            }
-        });
-        return false;
-    };
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
 
-    $('.createMaterial').click(loadForm);
-    $('#modalMaterial .modalContent').on('submit', '#file_form', saveForm);
-});
-</script>
+    <script>
+        $(function(){
+            var loadForm = function(){
+                var btn = $(this);
+                $.ajax({
+                    url : btn.attr('data-url'),
+                    type : 'get',
+                    // dataType : 'json',
+                    beforeSend: function(){
+                        $('#modalMaterial').modal('show');
+                    },
+                    success: function(data) {
+                        $('#modalMaterial .modal-content').html(data)
+                    }
+                });
+            }
+
+            var saveForm = function(){
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    data : form.serialize(),
+                    type : form.attr('method'),
+                    enctype: "multipart/form-data", 
+                    // dataType : 'json',
+                    beforeSend: function(){
+                        $('#modalMaterial').modal('hide');
+                    },
+                    success : function(data) {
+                        $("#htmlMaterial").html(data);
+                    },
+                    // complete: function(data){
+                    //     window.location.reload(true);
+                    //     console.log("Complete");
+                    // },
+                });
+                return false;
+            }
+
+            $('.add-material').click(loadForm);
+            $('#modalMaterial').on("submit", ".add-material-form", saveForm);
+            
+            $(".vendorComment").on("click", ".update-material", loadForm);
+            $("#modalMaterial").on("submit", ".update-material-form", saveForm);
+        })
+    </script>
 {% endblock javascript %}
 
 </body>

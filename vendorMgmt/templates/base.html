@@ -47,6 +47,15 @@
     <!-- #################### -->
         <div class="wrapper wrapper-content">
             <div class="row animated fadeInDown">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{message.tags}} alert-dismissable" role="alert">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
             {% block mainContent %}
                 

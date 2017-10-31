@@ -92,6 +92,7 @@
                         title: '{{ev.name}}-{{ev.etype}}',
                         start: '{{ev.event_date|date:"Y-m-d"}}T{{times|random}}:00:00',
                         allDay: false,
+                        url: "{% url 'order:porder_detail' ev.porder.id %}", 
                     {% if ev.etype == 'PAYMENT' %}
                         color: 'red',
                     {% elif ev.etype == 'TAXREFUND' %}

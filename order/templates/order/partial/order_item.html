@@ -1,0 +1,28 @@
+<table class="table table-striped table-bordered ">
+    <thead>
+        <tr>
+            <th>PRODUCT</th>
+            <th>P TYPE</th>
+            <th>AMOUNT</th>
+            <th>UNIT PRICE</th>
+            <th>PURCHASE PRICE</th>
+            <th>PACKING</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for porderitem in porder.porderitem_set.all %}
+    <tr>
+        <td> {{porderitem.product}} </td>
+        <td> {{porderitem.ptype}} </td>
+        <td style='text-align:right'> {{porderitem.amount|floatformat:2}} </td>
+        <td style='text-align:right'> $ {{porderitem.unit_price|floatformat:2}} </td>
+        <td style='text-align:right'> $ {{porderitem.purchase_price|floatformat:2}} </td>
+        <td> 
+            {{porderitem.packing.unit_weight}} Kg
+            {{porderitem.packing.packing_type}}
+            {{porderitem.packing.pallet_weight}} Kg per Pallet
+        </td>
+    </tr>                            
+{% endfor %}
+    </tbody>
+</table>

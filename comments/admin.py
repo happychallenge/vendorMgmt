@@ -7,4 +7,5 @@ from .models import Comment
 class CommentAdmin(admin.ModelAdmin):
     class Meta:
         model = Comment
-    list_display = ['id', 'content', 'created_at']
+    list_display = ['id', 'vendor', 'content', 'created_at']
+    search_fields = ['vendor__en_name', 'content']

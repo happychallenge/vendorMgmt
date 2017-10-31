@@ -8,7 +8,7 @@ from .models import Todo
 class TodoForm(forms.ModelForm):
     duedate = forms.DateField(
             widget=DatePicker(options={
-                    "format": "yyyy-mm-dd","autoclose": True, "class": "datepicker"}))
+                    "format": "yyyy-mm-dd","autoclose": True}))
     class Meta:
         model = Todo
         fields = "__all__"

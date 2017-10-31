@@ -23,7 +23,8 @@ from django.shortcuts import redirect
 from authentication import views as signup_views
 
 urlpatterns = [
-    url('^$', lambda r: redirect('/event'), name='home'),
+    # url('^$', lambda r: redirect('/event/'), name='home'),
+    url('^$', lambda r: redirect('todos:todo_list'), name='home'),
     url(r'^xmlyoon/', admin.site.urls),
     url(r'^chemical/', include('products.urls', namespace='chemical')),
     url(r'^allocation/', include('allocation.urls', namespace='allocation')),
@@ -33,9 +34,10 @@ urlpatterns = [
     url(r'^comments/', include('comments.urls', namespace='comments')),
     url(r'^todos/', include('todos.urls', namespace='todos')),
 
+# Authenticate
     url(r'^signup/$', signup_views.signup, name='signup'),
-    url(r'^login', signup_views.login, name='login'),
-    url(r'^logout', signup_views.logout, name='logout'),
+    url(r'^login/$', signup_views.login, name='login'),
+    url(r'^logout/$', signup_views.logout, name='logout'),
 ]
 
 if settings.DEBUG:

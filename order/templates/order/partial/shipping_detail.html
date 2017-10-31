@@ -1,0 +1,34 @@
+    <table class="table table-striped table-bordered ">
+        <thead>
+            <tr>
+                <th>DESTINATION</th>
+                <th>SHIPPING DATE</th>
+                <th>COMMENT</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for shipping in porder.shipping_set.all %}
+        <tr>
+            <td> {{shipping.destination}} </td>
+            <td> {{shipping.shipping_date}} </td>
+            <td width='40%'> {{shipping.comments|linebreaks}} </td>
+            <td> 
+                <button class="btn btn-primary add-material" 
+                    data-url="{% url 'order:ajax_material_file' shipping.id %}">APPEND FILE</button> 
+            </td>
+        </tr>
+        <tr>
+            <td colspan='4' id='htmlMaterial'>
+            </td>
+        </tr>
+    {% if shipping.material %}
+        <tr>
+            <td colspan='4' id="shippingList">
+                {% include 'order/partial/material.html' with material=shipping.material %}
+            </td>
+        </tr>                                              
+    {% endif %}                    
+{% endfor %}
+        </tbody>
+    </table>

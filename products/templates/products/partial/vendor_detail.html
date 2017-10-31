@@ -1,3 +1,4 @@
+{% load humanize %}    
     <tr class="gradeX">
         <td>CHINESE NAME</td>
         <td>{{ vendor.cn_name }}</td>
@@ -5,6 +6,18 @@
     <tr>
         <td>ENGLISH NAME</td>
         <td>{{ vendor.en_name|upper }}</td>
+    </tr>
+    <tr>
+        <td>BIRTH YEAR</td>
+        <td>{{ vendor.birthyear }}</td>
+    </tr>
+    <tr>
+        <td>CAPITAL</td>
+        <td>{{ vendor.capital|intcomma }}</td>
+    </tr>
+    <tr>
+        <td>SALES AMOUNT</td>
+        <td>{{ vendor.sales_amount|intcomma|default_if_none:'0'}}</td>
     </tr>
     <tr>
         <td>CHINESE ADDRESS</td>
@@ -32,7 +45,13 @@
     </tr>
     <tr>
         <td>PRODUCT LIST</td>
-        <td>{{ vendor.product_list }}</td>
+        <td>
+        {% if vendor.product_list %}
+            <a href="{{vendor.product_list.url}}" target='chem'>   
+                {{ vendor.product_list }}
+            </a>
+        {% endif %}
+        </td>
     </tr>
     <tr>
         <td>HOME PAGE</td>
@@ -50,5 +69,5 @@
     </tr>
     <tr>
         <td>COMMENTS</td>
-        <td>{{ vendor.comments }}</td>
+        <td>{{ vendor.comments|linebreaks }}</td>
     </tr>

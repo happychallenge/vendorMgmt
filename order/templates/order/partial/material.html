@@ -1,0 +1,70 @@
+<table class="table table-striped table-bordered ">
+    <thead>
+        <tr>
+            <td>NAME</td>
+            <td>FILE</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>INVOICE</td>
+            <td>
+                {% if material.invoice %}
+                    <a href="{{ material.invoice.url }}">
+                    {{ material.invoice }}
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>PACKING LIST</td>
+            <td>
+                {% if material.packingList %}
+                <a href="{{ material.packingList.url }}">
+                {{ material.packingList }}
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Bill of Lading</td>
+            <td>
+                {% if material.billofLading %}
+                <a href="{{ material.billofLading.url }}">
+                {{ material.billofLading }}
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Certificate of Ananlysis</td>
+            <td>
+                {% if material.coa %}
+                <a href="{{ material.coa.url }}">
+                {{ material.coa }}
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>FTA CO</td>
+            <td>
+            {% if material.fta_co %}
+                <a href="{{ material.fta_co.url }}">
+                {{ material.fta_co }}
+                </a>
+            {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>BAO GUAN DAN</td>
+            <td>
+                {% if material.baoguandan %}
+                <a href="{{ material.baoguandan.url }}">
+                {{ material.baoguandan }}
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>

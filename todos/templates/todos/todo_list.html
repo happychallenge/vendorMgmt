@@ -7,7 +7,7 @@
 
 {% block css %}
     <link href="{% static 'css/plugins/fullcalendar/fullcalendar.css' %}" rel="stylesheet">
-    <link href="{% static 'js/plugins/jquery-ui/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/plugins/datapicker/datepicker3.css' %}" rel="stylesheet">
 {% endblock css %}
 
 
@@ -76,7 +76,6 @@
     <script src="{% static 'js/inspinia.js' %}"></script>
     <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
     <script src="{% static 'js/plugins/datapicker/bootstrap-datepicker.js' %}"></script>
-    <script src="{% static 'js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
 
     <script src="{% static 'js/plugins/fullcalendar/moment.min.js' %}"></script>
     <script src="{% static 'js/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
@@ -161,20 +160,11 @@
             $("#modalTodo").on("submit", ".update-todo-form", saveForm);
         })
     </script>
+
     <script>
-        $(function() {
-            $('#id_duedate').datepicker({
-                buttonImage: "images/calendar.gif", // 버튼 이미지
-                buttonImageOnly : true,             // 버튼 이미지만 표시할지 여부
-                buttonText: "날짜선택",             // 버튼의 대체 텍스트
-                dateFormat: "yy-mm-dd",             // 날짜의 형식
-                changeMonth: true,                  // 월을 이동하기 위한 선택상자 표시여부
-                //minDate: 0,                       // 선택할수있는 최소날짜, ( 0 : 오늘 이전 날짜 선택 불가)
-            });
+        $(function(){
+            $("#id_duedate_pickers").datepicker();
         });
     </script>
+
 {% endblock javascript %}
-
-</body>
-
-</html>
