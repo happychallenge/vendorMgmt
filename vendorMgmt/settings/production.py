@@ -18,6 +18,8 @@ import dj_database_url
 # DATABASES = {
 #     'default': dj_database_url.parse('postgres://vendorMgmt:Wjdgml00@localhost:5432/vendorMgmt')
 # }
+SECRET_KEY = '!x+hsnfjpp(1+qsqjurz+1*i@xqa4wvt1ai=zkdia(m_!*vu#u'
+
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
