@@ -153,4 +153,4 @@ USE_TZ = True
 LOGIN_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = reverse_lazy('home')
 LOGOUT_URL = reverse_lazy('logout')
-
+LOGOUT_REDIRECT_URL = reverse_lazy('home')

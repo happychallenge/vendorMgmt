@@ -20,9 +20,6 @@ from django.shortcuts import redirect
 # from django.contrib.auth import views as login_views
 
 from authentication import views as signup_views
-from django.conf.urls import (
-        handler400, handler403, handler404, handler500
-)
 
 urlpatterns = [
     # url('^$', lambda r: redirect('/event/'), name='home'),
