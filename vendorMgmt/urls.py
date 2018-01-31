@@ -16,7 +16,6 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
-from django.conf.urls.static import static
 from django.shortcuts import redirect
 # from django.contrib.auth import views as login_views
 
@@ -40,10 +39,26 @@ urlpatterns = [
     url(r'^logout/$', signup_views.logout, name='logout'),
 ]
 
-if settings.DEBUG:
+handler404 = 'simpleMap.https.handler404'
+handler500 = 'simpleMap.https.handler500'
+
+if settings.DEBUG == True:
     # import debug_toolbar
     # urlpatterns = [
     #     url(r'^__debug__/', include(debug_toolbar.urls)),
     # ] + urlpatterns
-
+    from django.conf.urls.static import static
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+else:
+    from django.views import static
+    static_list = [
+        (settings.STATIC_URL, settings.STATIC_ROOT),
+        (settings.MEDIA_URL, settings.MEDIA_ROOT),
+    ]
+    for (prefix_url, root) in static_list:
+        if '://' not in prefix_url: # 외부 서버에서 서빙하는 것이 아니라면
+            prefix_url = prefix_url.lstrip('/')
+            url_pattern = r'^' + prefix_url + r'(?P<path>.+)'
+            pattern = url(url_pattern, static.serve, kwargs={'document_root': root})
+            urlpatterns.append(pattern)
