@@ -13,9 +13,9 @@ RAVEN_CONFIG = {
     'release': raven.fetch_git_sha(BASE_DIR),
 }
 
-DATABASES = {
-    'default': dj_database_url.parse('postgres://vendorMgmt:Wjdgml00@localhost:5432/vendorMgmt')
-}
+# DATABASES = {
+#     'default': dj_database_url.parse('postgres://vendorMgmt:Wjdgml00@localhost:5432/vendorMgmt')
+# }
 
 ALLOWED_HOSTS = ['*']
 
