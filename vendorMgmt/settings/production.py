@@ -15,9 +15,11 @@ import dj_database_url
 #     'release': raven.fetch_git_sha(BASE_DIR),
 # }
 
-DATABASES = {
-    'default': dj_database_url.parse('postgres://vendorMgmt:Wjdgml00@localhost:5432/vendorMgmt')
-}
+# DATABASES = {
+#     'default': dj_database_url.parse('postgres://vendorMgmt:Wjdgml00@localhost:5432/vendorMgmt')
+# }
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ join(BASE_DIR, 'staticfiles'),]
