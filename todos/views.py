@@ -18,7 +18,7 @@ def todo_list(request):
     to_dt = today + timedelta(days=90)
 
     todo_list = Todo.objects.filter(duedate__range=[from_dt, to_dt]).order_by('duedate')
-    times = [ time for time in range(10, 20)]
+    times = [ time for time in range(10, 24)]
 
     return render(request, 'todos/todo_list.html', {
             'todo_list': todo_list,
