@@ -19,6 +19,8 @@ import dj_database_url
 #     'default': dj_database_url.parse('postgres://vendorMgmt:Wjdgml00@localhost:5432/vendorMgmt')
 # }
 
+ALLOWED_HOSTS = ['*']
+
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
