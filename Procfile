@@ -1,1 +1,1 @@
-web: gunicorn vendorMgmt.wsgi --log-file
+web: gunicorn vendorMgmt.wsgi --log-file -
