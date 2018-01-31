@@ -14,4 +14,4 @@ from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vendorMgmt.settings.production")
 
-application = get_wsgi_application()
+application = Sentry(get_wsgi_application())
